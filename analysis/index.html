@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Akimbo analysis</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<script src="../node_modules/jquery/dist/jquery.js" type="text/javascript"></script>
+
+		<script src="../dist/akimbo.js" type="text/javascript"></script>
+
+		<script src="src/app/config/Routes.js" type="text/javascript"></script>
+		<script src="src/app/Core.js" type="text/javascript"></script>
+		<script src="src/app/pages/home/HomePage.js" type="text/javascript"></script>
+		<script src="src/app/pages/about/AboutPage.js" type="text/javascript"></script>
+		<script src="src/app/components/header/HeaderComponent.js" type="text/javascript"></script>
+		<style type="text/css">
+			.clearfix:before,
+			.clearfix:after{
+				content: " ";
+				display: table;
+			}
+
+			.clearfix:after{
+				clear: both;
+			}
+
+			.clearfix{
+				*zoom: 1;
+			}
+
+			[data-header] ul{
+				margin: 0 0 50px 0;
+				padding: 0;
+				list-style: none;
+			}
+
+			[data-header] ul li{
+				float: left;
+				margin-right: 20px;
+			}
+
+			[data-header] ul li a{
+				padding: 5px;
+				background: gray;
+				color: white;
+				text-decoration: none;
+			}
+
+			[data-header] ul li.selected a{
+				color: blue;
+			}
+		</style>
+    </head>
+    <body>
+		<div data-layout></div>
+    </body>
+</html>
