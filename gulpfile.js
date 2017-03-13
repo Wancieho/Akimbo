@@ -36,6 +36,17 @@ var akimbo = function () {
 gulp.task('akimbo', ['clean'], akimbo);
 gulp.task('akimbo-watch', akimbo);
 
+var analysis = function () {
+	return gulp.src(['analysis/src/**/*.js'])
+			.pipe(concat('akimbo.min.js'))
+			.pipe(uglify())
+			.pipe(rename('analysis.min.js'))
+			.pipe(gulp.dest('analysis'));
+};
+gulp.task('analysis', analysis);
+gulp.task('analysis-watch', analysis);
+
 gulp.task('watch', function () {
 	gulp.watch('src/**/*', ['akimbo-watch']);
+	gulp.watch('analysis/src/**/*.js', ['analysis-watch']);
 });
