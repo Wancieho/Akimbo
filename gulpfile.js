@@ -7,7 +7,8 @@ var merge = require('merge-stream');
 
 gulp.task('default', [
 	'clean',
-	'akimbo'
+	'akimbo',
+	'app'
 ]);
 
 gulp.task('clean', function () {
@@ -22,31 +23,28 @@ var akimbo = function () {
 	var akimbo = gulp.src(['src/**/*', '!src/Main.js'])
 			.pipe(concat('dependancies.js'));
 
-	var minified = merge(main, akimbo)
+	return merge(main, akimbo)
 			.pipe(concat('akimbo.min.js'))
+			.pipe(rename('akimbo.js'))
+			.pipe(gulp.dest('dist'))
 			.pipe(uglify())
 			.pipe(rename('akimbo.min.js'))
-			.pipe(gulp.dest('dist'));
-
-	var unminified = merge(main, akimbo)
-			.pipe(concat('akimbo.js'))
-			.pipe(rename('akimbo.js'))
 			.pipe(gulp.dest('dist'));
 };
 gulp.task('akimbo', ['clean'], akimbo);
 gulp.task('akimbo-watch', akimbo);
 
-var analysis = function () {
+var app = function () {
 	return gulp.src(['analysis/src/**/*.js'])
-			.pipe(concat('akimbo.min.js'))
+			.pipe(concat('app.min.js'))
 			.pipe(uglify())
-			.pipe(rename('analysis.min.js'))
+			.pipe(rename('app.min.js'))
 			.pipe(gulp.dest('analysis'));
 };
-gulp.task('analysis', analysis);
-gulp.task('analysis-watch', analysis);
+gulp.task('app', app);
+gulp.task('app-watch', app);
 
 gulp.task('watch', function () {
 	gulp.watch('src/**/*', ['akimbo-watch']);
-	gulp.watch('analysis/src/**/*.js', ['analysis-watch']);
+	gulp.watch('analysis/src/**/*.js', ['app-watch']);
 });

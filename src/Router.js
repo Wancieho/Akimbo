@@ -2,7 +2,7 @@
 	root.Akimbo.Router = Router;
 
 	var core = null;
-	var page = null;
+	var controller = null;
 	var busy = false;
 	var route = {};
 	var path = '';
@@ -85,31 +85,31 @@
 
 		destroy.apply(scope);
 		loadCore.apply(scope);
-		loadPage.apply(scope);
+		loadController.apply(scope);
 		loadCoreComponents.apply(scope);
 
-//		//prevent default anchor click if it has disabled attribute
-//		$(document).on('click', 'a[disabled]', function (e) {
-//			e.preventDefault();
-//		});
-//
-//		document.addEventListener('click', function (e) {
-//			if ($(e.target).closest('a[disabled]').length) {
-//				e.stopImmediatePropagation();
-//				e.preventDefault();
-//			}
-//		}, true);
+		//prevent default anchor click if it has disabled attribute
+		$(document).on('click', 'a[disabled]', function (e) {
+			e.preventDefault();
+		});
+
+		document.addEventListener('click', function (e) {
+			if ($(e.target).closest('a[disabled]').length) {
+				e.stopImmediatePropagation();
+				e.preventDefault();
+			}
+		}, true);
 
 		busy = false;
 	}
 
 	function destroy() {
-//		//remove previous page element bindings
-//		$('*').unbind().off().stop(true, true);
-//
-//		$(window).off();
-//
-//		$(document).off();
+		//remove previous page element bindings
+		$('*').unbind().off().stop(true, true);
+
+		$(window).off();
+
+		$(document).off();
 
 		//remove previous page events
 		this.event.remove();
@@ -141,27 +141,27 @@
 		}
 	}
 
-	function loadPage() {
-		var page = root.App.Pages[route.page];
+	function loadController() {
+		var controller = root.App.Controllers[route.controller];
 
-		if (page === undefined) {
-			throw 'root.App.Pages.' + route.page + ' does not exist';
+		if (controller === undefined) {
+			throw 'root.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		page = new this.component.load(root.App.Pages[route.page]);
+		controller = new this.component.load(root.App.Controllers[route.controller]);
 
-		//remove body class and add if page component meta property specified
+		//remove body class and add if controller meta property specified
 		if (removeClass) {
 			$('body').removeClass();
 		}
 
-		if (page.meta !== undefined) {
-			if (page.meta.templateClass !== undefined) {
-				$('body').addClass(page.meta.templateClass);
+		if (controller.meta !== undefined) {
+			if (controller.meta.templateClass !== undefined) {
+				$('body').addClass(controller.meta.templateClass);
 			}
 		}
 
-		page.segments = segments;
+		controller.segments = segments;
 	}
 
 	function loadCoreComponents() {

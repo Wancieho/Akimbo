@@ -1,6 +1,5 @@
-//#TODO: create checks to make sure all dependancies exist on startup eg. env.js
-//#TODO: also destroy things like Cache and Events when root # is loaded
 //#TODO!: remove all jQuery
+//#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
 
 /*
  * Setup namespaces & wait for document to be loaded before starting Akimbo
@@ -8,9 +7,9 @@
 (function (root) {
 	root.Akimbo = {};
 	root.App = {};
-	root.App.Pages = {};
-	root.App.Components = {};
 	root.App.Services = {};
+	root.App.Components = {};
+	root.App.Controllers = {};
 	root.App.Classes = {};
 	root.App.Config = {};
 
@@ -22,7 +21,7 @@
 })(this);
 
 /*
- * Initialisation
+ * Entry point
  */
 (function (root) {
 	root.Akimbo.Main = Main;

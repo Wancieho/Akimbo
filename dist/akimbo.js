@@ -1,6 +1,5 @@
-//#TODO: create checks to make sure all dependancies exist on startup eg. env.js
-//#TODO: also destroy things like Cache and Events when root # is loaded
 //#TODO!: remove all jQuery
+//#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
 
 /*
  * Setup namespaces & wait for document to be loaded before starting Akimbo
@@ -8,9 +7,9 @@
 (function (root) {
 	root.Akimbo = {};
 	root.App = {};
-	root.App.Pages = {};
-	root.App.Components = {};
 	root.App.Services = {};
+	root.App.Components = {};
+	root.App.Controllers = {};
 	root.App.Classes = {};
 	root.App.Config = {};
 
@@ -22,7 +21,7 @@
 })(this);
 
 /*
- * Initialisation
+ * Entry point
  */
 (function (root) {
 	root.Akimbo.Main = Main;
@@ -319,7 +318,7 @@
 	root.Akimbo.Router = Router;
 
 	var core = null;
-	var page = null;
+	var controller = null;
 	var busy = false;
 	var route = {};
 	var path = '';
@@ -402,31 +401,31 @@
 
 		destroy.apply(scope);
 		loadCore.apply(scope);
-		loadPage.apply(scope);
+		loadController.apply(scope);
 		loadCoreComponents.apply(scope);
 
-//		//prevent default anchor click if it has disabled attribute
-//		$(document).on('click', 'a[disabled]', function (e) {
-//			e.preventDefault();
-//		});
-//
-//		document.addEventListener('click', function (e) {
-//			if ($(e.target).closest('a[disabled]').length) {
-//				e.stopImmediatePropagation();
-//				e.preventDefault();
-//			}
-//		}, true);
+		//prevent default anchor click if it has disabled attribute
+		$(document).on('click', 'a[disabled]', function (e) {
+			e.preventDefault();
+		});
+
+		document.addEventListener('click', function (e) {
+			if ($(e.target).closest('a[disabled]').length) {
+				e.stopImmediatePropagation();
+				e.preventDefault();
+			}
+		}, true);
 
 		busy = false;
 	}
 
 	function destroy() {
-//		//remove previous page element bindings
-//		$('*').unbind().off().stop(true, true);
-//
-//		$(window).off();
-//
-//		$(document).off();
+		//remove previous page element bindings
+		$('*').unbind().off().stop(true, true);
+
+		$(window).off();
+
+		$(document).off();
 
 		//remove previous page events
 		this.event.remove();
@@ -458,27 +457,27 @@
 		}
 	}
 
-	function loadPage() {
-		var page = root.App.Pages[route.page];
+	function loadController() {
+		var controller = root.App.Controllers[route.controller];
 
-		if (page === undefined) {
-			throw 'root.App.Pages.' + route.page + ' does not exist';
+		if (controller === undefined) {
+			throw 'root.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		page = new this.component.load(root.App.Pages[route.page]);
+		controller = new this.component.load(root.App.Controllers[route.controller]);
 
-		//remove body class and add if page component meta property specified
+		//remove body class and add if controller meta property specified
 		if (removeClass) {
 			$('body').removeClass();
 		}
 
-		if (page.meta !== undefined) {
-			if (page.meta.templateClass !== undefined) {
-				$('body').addClass(page.meta.templateClass);
+		if (controller.meta !== undefined) {
+			if (controller.meta.templateClass !== undefined) {
+				$('body').addClass(controller.meta.templateClass);
 			}
 		}
 
-		page.segments = segments;
+		controller.segments = segments;
 	}
 
 	function loadCoreComponents() {
@@ -495,4 +494,166 @@
 			}, 50);
 		});
 	}
+})(this);
+(function (root) {
+	root.Akimbo.Service = Service;
+
+	function Service(params) {
+		if (params.name === undefined) {
+			throw 'Service name param must be specified';
+		}
+
+		this.listeners = {};
+		this.name = params.name;
+		this.serviceUrl = params.serviceUrl;
+		this.uri = params.uri;
+		this.events = $.extend(true, {
+			create: {
+				done: 'create.done',
+				fail: 'create.fail',
+				complete: 'create.complete'
+			},
+			read: {
+				done: 'read.done',
+				fail: 'read.fail',
+				complete: 'read.complete'
+			},
+			update: {
+				done: 'update.done',
+				fail: 'update.fail',
+				complete: 'update.complete'
+			},
+			destroy: {
+				done: 'destroy.done',
+				fail: 'destroy.fail',
+				complete: 'destroy.complete'
+			},
+			index: {
+				done: 'index.done',
+				fail: 'index.fail',
+				complete: 'index.complete'
+			}
+		}, params.overrideEvents);
+
+		(function constructor(scope) {
+			scope.config = new root.Akimbo.Config();
+			scope.cache = new root.Akimbo.Cache();
+			scope.event = new root.Akimbo.Event();
+		})(this);
+	}
+
+	Service.prototype.name = Service.name;
+
+	Service.prototype.create = function (params, object, overrideEvents) {
+		var scope = this;
+		var events = $.extend(true, this.events, overrideEvents);
+
+		this.listeners.create = $.ajax({
+			url: this.serviceUrl + '/' + this.uri,
+			type: 'POST',
+			data: params,
+			contentType: 'application/json'
+		}).done(function (response) {
+			scope.event.broadcast(events.create.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).fail(function (xhr) {
+			scope.event.broadcast(events.create.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).complete(function () {
+			scope.event.broadcast(events.create.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		});
+	};
+
+	Service.prototype.read = function (params, object, overrideEvents) {
+		var scope = this;
+		var events = $.extend(true, this.events, overrideEvents);
+		var identifier = 'read';
+
+		if (params !== undefined && params !== null && params.identifier !== undefined) {
+			identifier = params.identifier;
+		}
+
+		this.listeners.read = $.ajax({
+			url: this.serviceUrl + '/' + this.uri + '/' + identifier,
+			type: 'GET',
+			headers: params
+		}).done(function (response) {
+			scope.event.broadcast(events.read.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).fail(function (xhr) {
+			scope.event.broadcast(events.read.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).complete(function () {
+			scope.event.broadcast(events.read.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		});
+	};
+
+	Service.prototype.update = function (params, object, overrideEvents) {
+		var scope = this;
+		var events = $.extend(true, this.events, overrideEvents);
+
+		this.listeners.update = $.ajax({
+			url: this.serviceUrl + '/' + this.uri,
+			type: 'PUT',
+			data: params,
+			contentType: 'application/json'
+		}).done(function (response) {
+			scope.event.broadcast(events.update.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).fail(function (xhr) {
+			scope.event.broadcast(events.update.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).complete(function () {
+			scope.event.broadcast(events.update.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		});
+	};
+
+	Service.prototype.destroy = function (params, object, overrideEvents) {
+		var scope = this;
+		var events = $.extend(true, this.events, overrideEvents);
+
+		this.listeners.update = $.ajax({
+			url: this.serviceUrl + '/' + this.uri,
+			type: 'DELETE',
+			data: params,
+			contentType: 'application/json'
+		}).done(function (response) {
+			scope.event.broadcast(events.destroy.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).fail(function (xhr) {
+			scope.event.broadcast(events.destroy.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).complete(function () {
+			scope.event.broadcast(events.destroy.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		});
+	};
+
+	Service.prototype.index = function (params, object, overrideEvents) {
+		var scope = this;
+		var events = $.extend(true, this.events, overrideEvents);
+
+		this.listeners.index = $.ajax({
+			url: this.serviceUrl + '/' + this.uri,
+			type: 'GET',
+			headers: params
+		}).done(function (response) {
+			scope.event.broadcast(events.index.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).fail(function (xhr) {
+			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		}).complete(function () {
+			scope.event.broadcast(events.index.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+		});
+	};
+
+	Service.prototype.cancel = function (listener) {
+		if (listener !== undefined) {
+			if (this.listeners[listener] !== null) {
+				this.listeners[listener].abort();
+			}
+		} else {
+			$.each(this.listeners, function () {
+				this.abort();
+			});
+		}
+	};
+
+	Service.prototype.listen = function (event, callback, object) {
+		if (object === undefined) {
+			throw 'listener "object" parameter must be specified for ' + this.name;
+		}
+
+		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
+	};
 })(this);

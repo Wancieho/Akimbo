@@ -4,11 +4,11 @@
 	var routes = [
 		{
 			path: '',
-			page: 'HomePage'
+			controller: 'HomeController'
 		},
 		{
 			path: 'about',
-			page: 'AboutPage'
+			controller: 'AboutController'
 		}
 	];
 
