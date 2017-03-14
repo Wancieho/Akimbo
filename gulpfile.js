@@ -1,4 +1,5 @@
 var del = require('del');
+var closureCompiler = require('google-closure-compiler').gulp();
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
@@ -24,7 +25,7 @@ var akimbo = function () {
 			.pipe(concat('dependancies.js'));
 
 	return merge(main, akimbo)
-			.pipe(concat('akimbo.min.js'))
+			.pipe(concat('akimbo.js'))
 			.pipe(rename('akimbo.js'))
 			.pipe(gulp.dest('dist'))
 			.pipe(uglify())
@@ -36,13 +37,27 @@ gulp.task('akimbo-watch', akimbo);
 
 var app = function () {
 	return gulp.src(['analysis/src/**/*.js'])
-			.pipe(concat('app.min.js'))
+			.pipe(concat('app.js'))
+			.pipe(gulp.dest('analysis'))
 			.pipe(uglify())
 			.pipe(rename('app.min.js'))
 			.pipe(gulp.dest('analysis'));
 };
 gulp.task('app', app);
 gulp.task('app-watch', app);
+
+gulp.task('compile', function () {
+	return merge(gulp.src('dist/akimbo.js'), gulp.src('analysis/app.js'))
+//	return gulp.src('dist/akimbo.js')
+			.pipe(concat('compiled.min.js'))
+			.pipe(rename('compiled.min.js'))
+//			.pipe(closureCompiler({
+//				compilation_level: 'SIMPLE',
+//				output_wrapper: '(function(){\n%output%\n}).call(this)',
+//				js_output_file: 'compiled.min.js'
+//			}))
+			.pipe(gulp.dest('analysis'));
+});
 
 gulp.task('watch', function () {
 	gulp.watch('src/**/*', ['akimbo-watch']);

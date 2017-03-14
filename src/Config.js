@@ -12,6 +12,13 @@
 	Config.prototype = {
 		get: function (config) {
 			if (config === 'routes') {
+				console.debug(root);
+				console.debug(root.App);
+				console.debug(root.App.Config);
+				if (root.App.Config.Routes === undefined) {
+					throw 'root.App.Config.Routes() must be defined';
+				}
+
 				return new root.App.Config.Routes().get();
 			} else if (config.indexOf('settings') !== -1) {
 				var settings = new Config.Settings();
@@ -20,7 +27,7 @@
 				if (config.indexOf('.') !== -1) {
 					var dropPrefix = config.replace('settings.', '');
 					var pieces = dropPrefix.split('.');
-					var settings = settings.get();
+					settings = settings.get();
 
 					//build namespace into object
 					for (var i = 0; i < pieces.length; i++) {
@@ -39,4 +46,4 @@
 			}
 		}
 	};
-})(this);
+})(protected);

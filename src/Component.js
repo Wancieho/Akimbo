@@ -87,11 +87,14 @@
 				//remove HTML
 				$('[' + component.meta.selector + ']').empty().remove();
 
-				delete $('[' + component.meta.selector + ']');
+				//#TODO: google closure compiler doesnt allow this?
+//				delete $('[' + component.meta.selector + ']');
 
 				//delete instance
 				component = null;
-				delete component;
+
+				//#TODO: google closure compiler doesnt allow this?
+//				delete component;
 			});
 
 			componentsLoaded = [];
@@ -170,4 +173,4 @@
 			}
 		});
 	}
-})(this);
+})(protected);

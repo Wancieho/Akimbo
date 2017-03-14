@@ -1,6 +1,10 @@
 //#TODO!: remove all jQuery
 //#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
 
+function Protected() {}
+
+var protected = new Protected();
+
 /*
  * Setup namespaces & wait for document to be loaded before starting Akimbo
  */
@@ -18,7 +22,7 @@
 			new root.Akimbo.Main();
 		}
 	};
-})(this);
+})(protected);
 
 /*
  * Entry point
@@ -47,4 +51,4 @@
 
 		scope.router.navigate(route);
 	}
-})(this);
+})(protected);

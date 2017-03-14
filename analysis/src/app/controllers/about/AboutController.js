@@ -7,4 +7,4 @@
 			templateUrl: 'src/app/controllers/about/about.html'
 		};
 	}
-})(this);
+})(protected);

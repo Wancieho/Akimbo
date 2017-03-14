@@ -1,3 +1,5 @@
 nbproject/
 node_modules/
+app.js
 app.min.js
+compiled.js
