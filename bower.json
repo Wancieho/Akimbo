@@ -1,6 +1,6 @@
 {
   "name": "akimbo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/akimbo.min.js",
   "ignore": [
     "src",

@@ -1,6 +1,6 @@
 {
   "name": "akimbo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "devDependencies": {
     "del": "^2.2.0",
     "gulp": "^3.9.1",
