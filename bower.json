@@ -1,14 +1,15 @@
 {
-  "name": "Akimbo",
+  "name": "akimbo",
   "version": "0.0.1",
-  "main" : "dist/akimbo.min.js",
+  "main": "dist/akimbo.min.js",
   "ignore": [
     "src",
     "tester",
     ".gitignore",
-    "bower.json",
     "gulpfile.js",
     "package.json"
   ],
-  "devDependencies": {}
+  "devDependencies": {
+    "jQuery": "2"
+  }
 }
