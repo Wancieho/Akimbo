@@ -2,14 +2,15 @@ var del = require('del');
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var headerfooter = require('gulp-headerfooter');
+var order = require("gulp-order");
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
 var runSequence = require('run-sequence');
 
-gulp.task('default', function () {
-	runSequence('build', 'app', 'combine', 'encapsulate');
-});
+gulp.task('default', [
+	'encapsulate'
+]);
 
 gulp.task('clean', function () {
 	return del([
@@ -31,7 +32,7 @@ gulp.task('build', function () {
 			.pipe(gulp.dest('dist'));
 });
 
-gulp.task('app', function () {
+gulp.task('app', ['build'], function () {
 	return gulp.src(['tester/src/**/*.js'])
 			.pipe(concat('app.js'))
 			.pipe(gulp.dest('tester'))
@@ -40,14 +41,18 @@ gulp.task('app', function () {
 			.pipe(gulp.dest('tester'));
 });
 
-gulp.task('combine', function () {
-	return merge(gulp.src('dist/akimbo.js'), gulp.src('tester/app.js'))
+gulp.task('combine', ['app'], function () {
+	return gulp.src(['dist/akimbo.js', 'tester/app.js'])
+			.pipe(order([
+				'dist/akimbo.js',
+				'tester/app.js'
+			]))
 			.pipe(concat('combined.min.js'))
 			.pipe(uglify())
 			.pipe(gulp.dest('tester'));
 });
 
-gulp.task('encapsulate', function () {
+gulp.task('encapsulate', ['combine'], function () {
 	return gulp.src('tester/combined.min.js')
 			.pipe(headerfooter.header('(function(){\n'))
 			.pipe(headerfooter.footer('\n})();'))
@@ -55,7 +60,5 @@ gulp.task('encapsulate', function () {
 });
 
 gulp.task('watch', function () {
-	gulp.watch(['src/**/*', 'tester/src/**/*.js'], function () {
-		runSequence('build', 'app', 'combine', 'encapsulate');
-	});
+	gulp.watch(['src/**/*', 'tester/src/**/*.js'], ['encapsulate']);
 });
