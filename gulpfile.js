@@ -1,16 +1,15 @@
 var del = require('del');
-var closureCompiler = require('google-closure-compiler').gulp();
 var gulp = require('gulp');
 var concat = require('gulp-concat');
+var headerfooter = require('gulp-headerfooter');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
+var runSequence = require('run-sequence');
 
-gulp.task('default', [
-	'clean',
-	'akimbo',
-	'app'
-]);
+gulp.task('default', function () {
+	runSequence('build', 'app', 'combine', 'encapsulate');
+});
 
 gulp.task('clean', function () {
 	return del([
@@ -18,48 +17,45 @@ gulp.task('clean', function () {
 	]);
 });
 
-var akimbo = function () {
-	var main = gulp.src(['src/Main.js']);
+gulp.task('build', function () {
+	var first = gulp.src(['src/Main.js']);
 
-	var akimbo = gulp.src(['src/**/*', '!src/Main.js'])
-			.pipe(concat('dependancies.js'));
+	var second = gulp.src(['src/**/*', '!src/Main.js'])
+			.pipe(concat('second.js'));
 
-	return merge(main, akimbo)
+	return merge(first, second)
 			.pipe(concat('akimbo.js'))
-			.pipe(rename('akimbo.js'))
 			.pipe(gulp.dest('dist'))
 			.pipe(uglify())
 			.pipe(rename('akimbo.min.js'))
 			.pipe(gulp.dest('dist'));
-};
-gulp.task('akimbo', ['clean'], akimbo);
-gulp.task('akimbo-watch', akimbo);
+});
 
-var app = function () {
-	return gulp.src(['analysis/src/**/*.js'])
+gulp.task('app', function () {
+	return gulp.src(['tester/src/**/*.js'])
 			.pipe(concat('app.js'))
-			.pipe(gulp.dest('analysis'))
+			.pipe(gulp.dest('tester'))
 			.pipe(uglify())
 			.pipe(rename('app.min.js'))
-			.pipe(gulp.dest('analysis'));
-};
-gulp.task('app', app);
-gulp.task('app-watch', app);
+			.pipe(gulp.dest('tester'));
+});
 
-gulp.task('compile', function () {
-	return merge(gulp.src('dist/akimbo.js'), gulp.src('analysis/app.js'))
-//	return gulp.src('dist/akimbo.js')
-			.pipe(concat('compiled.min.js'))
-			.pipe(rename('compiled.min.js'))
-//			.pipe(closureCompiler({
-//				compilation_level: 'SIMPLE',
-//				output_wrapper: '(function(){\n%output%\n}).call(this)',
-//				js_output_file: 'compiled.min.js'
-//			}))
-			.pipe(gulp.dest('analysis'));
+gulp.task('combine', function () {
+	return merge(gulp.src('dist/akimbo.js'), gulp.src('tester/app.js'))
+			.pipe(concat('combined.min.js'))
+			.pipe(uglify())
+			.pipe(gulp.dest('tester'));
+});
+
+gulp.task('encapsulate', function () {
+	return gulp.src('tester/combined.min.js')
+			.pipe(headerfooter.header('(function(){\n'))
+			.pipe(headerfooter.footer('\n})();'))
+			.pipe(gulp.dest('tester'));
 });
 
 gulp.task('watch', function () {
-	gulp.watch('src/**/*', ['akimbo-watch']);
-	gulp.watch('analysis/src/**/*.js', ['app-watch']);
+	gulp.watch(['src/**/*', 'tester/src/**/*.js'], function () {
+		runSequence('build', 'app', 'combine', 'encapsulate');
+	});
 });

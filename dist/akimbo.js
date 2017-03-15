@@ -242,9 +242,6 @@ var protected = new Protected();
 	Config.prototype = {
 		get: function (config) {
 			if (config === 'routes') {
-				console.debug(root);
-				console.debug(root.App);
-				console.debug(root.App.Config);
 				if (root.App.Config.Routes === undefined) {
 					throw 'root.App.Config.Routes() must be defined';
 				}

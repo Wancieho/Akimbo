@@ -6,7 +6,5 @@
 			selector: 'data-content',
 			templateUrl: 'src/app/controllers/home/home.html'
 		};
-		
-		console.debug(root);
 	}
 })(protected);
