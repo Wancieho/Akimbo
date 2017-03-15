@@ -6,7 +6,6 @@ var order = require("gulp-order");
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
-var runSequence = require('run-sequence');
 
 gulp.task('default', [
 	'encapsulate'

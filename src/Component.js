@@ -50,6 +50,7 @@
 
 				//prevent developer mistakes of loading multiple layouts per page load
 				if (!layoutHasLoaded) {
+					//#TODO!!: if default or specified layout doesnt exist then throw error
 					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html', function () {
 						layoutHasLoaded = true;
 
