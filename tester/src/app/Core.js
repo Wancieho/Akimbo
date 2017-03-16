@@ -1,11 +1,11 @@
-(function (root) {
-	root.App.Core = Core;
+(function (akimbo) {
+	akimbo.App.Core = Core;
 
 	function Core() {
 		this.meta = {
 			components: [
-				root.App.Components.HeaderComponent
+				akimbo.App.Components.HeaderComponent
 			]
 		};
 	}
-})(protected);
+})(akimbo);

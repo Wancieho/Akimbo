@@ -1,5 +1,5 @@
-(function (root) {
-	root.App.Config.Routes = Routes;
+(function (akimbo) {
+	akimbo.App.Config.Routes = Routes;
 
 	var routes = [
 		{
@@ -19,4 +19,4 @@
 			return routes;
 		}
 	};
-})(protected);
+})(akimbo);

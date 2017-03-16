@@ -1,5 +1,5 @@
-(function (root) {
-	root.App.Controllers.HomeController = HomeController;
+(function (akimbo) {
+	akimbo.App.Controllers.HomeController = HomeController;
 
 	function HomeController() {
 		this.meta = {
@@ -7,4 +7,4 @@
 			templateUrl: 'src/app/controllers/home/home.html'
 		};
 	}
-})(protected);
+})(akimbo);

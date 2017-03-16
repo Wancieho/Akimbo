@@ -1,5 +1,5 @@
-(function (root) {
-	root.Akimbo.Router = Router;
+(function (akimbo) {
+	akimbo.Router = Router;
 
 	var core = null;
 	var controller = null;
@@ -10,9 +10,9 @@
 	var segments = [];
 
 	function Router() {
-		this.config = new root.Akimbo.Config();
-		this.component = new root.Akimbo.Component();
-		this.event = new root.Akimbo.Event();
+		this.config = new akimbo.Config();
+		this.component = new akimbo.Component();
+		this.event = new akimbo.Event();
 	}
 
 	Router.prototype = {
@@ -128,7 +128,7 @@
 	}
 
 	function loadCore() {
-		core = new this.component.load(root.App.Core);
+		core = new this.component.load(akimbo.App.Core);
 
 		//if core has a constructor method then call it now
 		if (core.constructor !== undefined) {
@@ -142,13 +142,13 @@
 	}
 
 	function loadController() {
-		var controller = root.App.Controllers[route.controller];
+		var controller = akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
-			throw 'root.App.Controllers.' + route.controller + ' does not exist';
+			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		controller = new this.component.load(root.App.Controllers[route.controller]);
+		controller = new this.component.load(akimbo.App.Controllers[route.controller]);
 
 		//remove body class and add if controller meta property specified
 		if (removeClass) {
@@ -178,4 +178,4 @@
 			}, 50);
 		});
 	}
-})(protected);
+})(akimbo);

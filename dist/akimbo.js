@@ -1,41 +1,38 @@
 //#TODO!: remove all jQuery
 //#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
 
-function Protected() {}
-
-var protected = new Protected();
+var akimbo = {};
 
 /*
  * Setup namespaces & wait for document to be loaded before starting Akimbo
  */
-(function (root) {
-	root.Akimbo = {};
-	root.App = {};
-	root.App.Services = {};
-	root.App.Components = {};
-	root.App.Controllers = {};
-	root.App.Classes = {};
-	root.App.Config = {};
+(function (akimbo) {
+	akimbo.App = {};
+	akimbo.App.Services = {};
+	akimbo.App.Components = {};
+	akimbo.App.Controllers = {};
+	akimbo.App.Classes = {};
+	akimbo.App.Config = {};
 
 	document.onreadystatechange = function () {
 		if (this.readyState === 'complete') {
-			new root.Akimbo.Main();
+			new akimbo.Main();
 		}
 	};
-})(protected);
+})(akimbo);
 
 /*
  * Entry point
  */
-(function (root) {
-	root.Akimbo.Main = Main;
+(function (akimbo) {
+	akimbo.Main = Main;
 
 	var instance = null;
 
 	function Main() {
 		if (instance === null) {
 			instance = this;
-			this.router = new root.Akimbo.Router();
+			this.router = new akimbo.Router();
 
 			loadRoute(this);
 		}
@@ -51,10 +48,10 @@ var protected = new Protected();
 
 		scope.router.navigate(route);
 	}
-})(protected);
+})(akimbo);
 //#TODO: rename to Loader?
-(function (root) {
-	root.Akimbo.Component = Component;
+(function (akimbo) {
+	akimbo.Component = Component;
 
 	var componentsLoaded = [];
 	var scope = null;
@@ -62,7 +59,7 @@ var protected = new Protected();
 
 	function Component() {
 		scope = this;
-		scope.event = new root.Akimbo.Event();
+		scope.event = new akimbo.Event();
 	}
 
 	Component.prototype = {
@@ -83,7 +80,7 @@ var protected = new Protected();
 			componentsLoaded.unshift(component);
 
 			//only check required meta properties if not Core
-			if (component instanceof root.App.Core === false) {
+			if (component instanceof akimbo.App.Core === false) {
 				if (component.meta === undefined) {
 					throw '"' + component.constructor.name + '" meta property must be defined';
 				}
@@ -104,6 +101,7 @@ var protected = new Protected();
 
 				//prevent developer mistakes of loading multiple layouts per page load
 				if (!layoutHasLoaded) {
+					//#TODO!!: if default or specified layout doesnt exist then throw error
 					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html', function () {
 						layoutHasLoaded = true;
 
@@ -115,7 +113,7 @@ var protected = new Protected();
 			}
 
 			scope.event.listen('layout.loaded', function () {
-				if (component instanceof root.App.Core === false) {
+				if (component instanceof akimbo.App.Core === false) {
 					loadTemplateAndInitiateComponent(component, component.constructor.name);
 				}
 			});
@@ -207,7 +205,7 @@ var protected = new Protected();
 		$('[' + component.meta.selector + ']').fadeIn(200);
 
 		//component has components specified in meta but dont load Core components just yet we do that in Akimbo.Router
-		if (component.meta.components !== undefined && component instanceof root.App.Core === false) {
+		if (component.meta.components !== undefined && component instanceof akimbo.App.Core === false) {
 			scope.loadComponents(component.meta.components);
 		}
 	}
@@ -227,9 +225,9 @@ var protected = new Protected();
 			}
 		});
 	}
-})(protected);
-(function (root) {
-	root.Akimbo.Config = Config;
+})(akimbo);
+(function (akimbo) {
+	akimbo.Config = Config;
 
 	var instance = null;
 
@@ -242,11 +240,11 @@ var protected = new Protected();
 	Config.prototype = {
 		get: function (config) {
 			if (config === 'routes') {
-				if (root.App.Config.Routes === undefined) {
-					throw 'root.App.Config.Routes() must be defined';
+				if (akimbo.App.Config.Routes === undefined) {
+					throw 'akimbo.App.Config.Routes() must be defined';
 				}
 
-				return new root.App.Config.Routes().get();
+				return new akimbo.App.Config.Routes().get();
 			} else if (config.indexOf('settings') !== -1) {
 				var settings = new Config.Settings();
 
@@ -273,9 +271,9 @@ var protected = new Protected();
 			}
 		}
 	};
-})(protected);
-(function (root) {
-	root.Akimbo.Event = Event;
+})(akimbo);
+(function (akimbo) {
+	akimbo.Event = Event;
 
 	var listeners = [];
 
@@ -324,9 +322,9 @@ var protected = new Protected();
 			}
 		}
 	};
-})(protected);
-(function (root) {
-	root.Akimbo.Router = Router;
+})(akimbo);
+(function (akimbo) {
+	akimbo.Router = Router;
 
 	var core = null;
 	var controller = null;
@@ -337,9 +335,9 @@ var protected = new Protected();
 	var segments = [];
 
 	function Router() {
-		this.config = new root.Akimbo.Config();
-		this.component = new root.Akimbo.Component();
-		this.event = new root.Akimbo.Event();
+		this.config = new akimbo.Config();
+		this.component = new akimbo.Component();
+		this.event = new akimbo.Event();
 	}
 
 	Router.prototype = {
@@ -455,7 +453,7 @@ var protected = new Protected();
 	}
 
 	function loadCore() {
-		core = new this.component.load(root.App.Core);
+		core = new this.component.load(akimbo.App.Core);
 
 		//if core has a constructor method then call it now
 		if (core.constructor !== undefined) {
@@ -469,13 +467,13 @@ var protected = new Protected();
 	}
 
 	function loadController() {
-		var controller = root.App.Controllers[route.controller];
+		var controller = akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
-			throw 'root.App.Controllers.' + route.controller + ' does not exist';
+			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		controller = new this.component.load(root.App.Controllers[route.controller]);
+		controller = new this.component.load(akimbo.App.Controllers[route.controller]);
 
 		//remove body class and add if controller meta property specified
 		if (removeClass) {
@@ -505,9 +503,9 @@ var protected = new Protected();
 			}, 50);
 		});
 	}
-})(protected);
-(function (root) {
-	root.Akimbo.Service = Service;
+})(akimbo);
+(function (akimbo) {
+	akimbo.Service = Service;
 
 	function Service(params) {
 		if (params.name === undefined) {
@@ -547,10 +545,10 @@ var protected = new Protected();
 		}, params.overrideEvents);
 
 		(function constructor(scope) {
-			scope.config = new root.Akimbo.Config();
-			scope.cache = new root.Akimbo.Cache();
-			scope.event = new root.Akimbo.Event();
-		})(protected);
+			scope.config = new akimbo.Config();
+			scope.cache = new akimbo.Cache();
+			scope.event = new akimbo.Event();
+		})(akimbo);
 	}
 
 	Service.prototype.name = Service.name;
@@ -667,4 +665,4 @@ var protected = new Protected();
 
 		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
 	};
-})(protected);
+})(akimbo);

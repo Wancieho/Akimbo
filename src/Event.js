@@ -1,5 +1,5 @@
-(function (root) {
-	root.Akimbo.Event = Event;
+(function (akimbo) {
+	akimbo.Event = Event;
 
 	var listeners = [];
 
@@ -48,4 +48,4 @@
 			}
 		}
 	};
-})(protected);
+})(akimbo);

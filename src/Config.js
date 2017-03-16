@@ -1,5 +1,5 @@
-(function (root) {
-	root.Akimbo.Config = Config;
+(function (akimbo) {
+	akimbo.Config = Config;
 
 	var instance = null;
 
@@ -12,11 +12,11 @@
 	Config.prototype = {
 		get: function (config) {
 			if (config === 'routes') {
-				if (root.App.Config.Routes === undefined) {
-					throw 'root.App.Config.Routes() must be defined';
+				if (akimbo.App.Config.Routes === undefined) {
+					throw 'akimbo.App.Config.Routes() must be defined';
 				}
 
-				return new root.App.Config.Routes().get();
+				return new akimbo.App.Config.Routes().get();
 			} else if (config.indexOf('settings') !== -1) {
 				var settings = new Config.Settings();
 
@@ -43,4 +43,4 @@
 			}
 		}
 	};
-})(protected);
+})(akimbo);

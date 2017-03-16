@@ -1,5 +1,5 @@
-(function (root) {
-	root.Akimbo.Service = Service;
+(function (akimbo) {
+	akimbo.Service = Service;
 
 	function Service(params) {
 		if (params.name === undefined) {
@@ -39,10 +39,10 @@
 		}, params.overrideEvents);
 
 		(function constructor(scope) {
-			scope.config = new root.Akimbo.Config();
-			scope.cache = new root.Akimbo.Cache();
-			scope.event = new root.Akimbo.Event();
-		})(protected);
+			scope.config = new akimbo.Config();
+			scope.cache = new akimbo.Cache();
+			scope.event = new akimbo.Event();
+		})(akimbo);
 	}
 
 	Service.prototype.name = Service.name;
@@ -159,4 +159,4 @@
 
 		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
 	};
-})(protected);
+})(akimbo);

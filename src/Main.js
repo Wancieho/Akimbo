@@ -1,41 +1,38 @@
 //#TODO!: remove all jQuery
 //#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
 
-function Protected() {}
-
-var protected = new Protected();
+var akimbo = {};
 
 /*
  * Setup namespaces & wait for document to be loaded before starting Akimbo
  */
-(function (root) {
-	root.Akimbo = {};
-	root.App = {};
-	root.App.Services = {};
-	root.App.Components = {};
-	root.App.Controllers = {};
-	root.App.Classes = {};
-	root.App.Config = {};
+(function (akimbo) {
+	akimbo.App = {};
+	akimbo.App.Services = {};
+	akimbo.App.Components = {};
+	akimbo.App.Controllers = {};
+	akimbo.App.Classes = {};
+	akimbo.App.Config = {};
 
 	document.onreadystatechange = function () {
 		if (this.readyState === 'complete') {
-			new root.Akimbo.Main();
+			new akimbo.Main();
 		}
 	};
-})(protected);
+})(akimbo);
 
 /*
  * Entry point
  */
-(function (root) {
-	root.Akimbo.Main = Main;
+(function (akimbo) {
+	akimbo.Main = Main;
 
 	var instance = null;
 
 	function Main() {
 		if (instance === null) {
 			instance = this;
-			this.router = new root.Akimbo.Router();
+			this.router = new akimbo.Router();
 
 			loadRoute(this);
 		}
@@ -51,4 +48,4 @@ var protected = new Protected();
 
 		scope.router.navigate(route);
 	}
-})(protected);
+})(akimbo);

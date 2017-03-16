@@ -1,5 +1,5 @@
-(function (root) {
-	root.App.Controllers.AboutController = AboutController;
+(function (akimbo) {
+	akimbo.App.Controllers.AboutController = AboutController;
 
 	function AboutController() {
 		this.meta = {
@@ -7,4 +7,4 @@
 			templateUrl: 'src/app/controllers/about/about.html'
 		};
 	}
-})(protected);
+})(akimbo);

@@ -1,6 +1,6 @@
 //#TODO: rename to Loader?
-(function (root) {
-	root.Akimbo.Component = Component;
+(function (akimbo) {
+	akimbo.Component = Component;
 
 	var componentsLoaded = [];
 	var scope = null;
@@ -8,7 +8,7 @@
 
 	function Component() {
 		scope = this;
-		scope.event = new root.Akimbo.Event();
+		scope.event = new akimbo.Event();
 	}
 
 	Component.prototype = {
@@ -29,7 +29,7 @@
 			componentsLoaded.unshift(component);
 
 			//only check required meta properties if not Core
-			if (component instanceof root.App.Core === false) {
+			if (component instanceof akimbo.App.Core === false) {
 				if (component.meta === undefined) {
 					throw '"' + component.constructor.name + '" meta property must be defined';
 				}
@@ -62,7 +62,7 @@
 			}
 
 			scope.event.listen('layout.loaded', function () {
-				if (component instanceof root.App.Core === false) {
+				if (component instanceof akimbo.App.Core === false) {
 					loadTemplateAndInitiateComponent(component, component.constructor.name);
 				}
 			});
@@ -154,7 +154,7 @@
 		$('[' + component.meta.selector + ']').fadeIn(200);
 
 		//component has components specified in meta but dont load Core components just yet we do that in Akimbo.Router
-		if (component.meta.components !== undefined && component instanceof root.App.Core === false) {
+		if (component.meta.components !== undefined && component instanceof akimbo.App.Core === false) {
 			scope.loadComponents(component.meta.components);
 		}
 	}
@@ -174,4 +174,4 @@
 			}
 		});
 	}
-})(protected);
+})(akimbo);
