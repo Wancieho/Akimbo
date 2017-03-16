@@ -3,7 +3,7 @@
 
 	function Service(params) {
 		if (params.name === undefined) {
-			throw 'Service name param must be specified';
+			throw 'Service "name" param must be specified';
 		}
 
 		this.listeners = {};
@@ -42,7 +42,7 @@
 			scope.config = new akimbo.Config();
 			scope.cache = new akimbo.Cache();
 			scope.event = new akimbo.Event();
-		})(akimbo);
+		})(this);
 	}
 
 	Service.prototype.name = Service.name;

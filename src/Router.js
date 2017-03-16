@@ -2,7 +2,6 @@
 	akimbo.Router = Router;
 
 	var core = null;
-	var controller = null;
 	var busy = false;
 	var route = {};
 	var path = '';
@@ -19,7 +18,7 @@
 		navigate: function (requestedPath, removeClassParam) {
 			var scope = this;
 			var routeExists = false;
-			//#TODO: pass segments to ALL components
+			//#TODO: pass segments to ALL controllers and child components
 			segments = requestedPath.split('/');
 			removeClass = removeClassParam === false ? false : true;
 

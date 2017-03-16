@@ -49,6 +49,41 @@ var akimbo = {};
 		scope.router.navigate(route);
 	}
 })(akimbo);
+(function (akimbo) {
+	akimbo.Cache = Cache;
+
+	var instance = null;
+	var data = {};
+
+	function Cache() {
+		if (instance === null) {
+			instance = this;
+		}
+	}
+
+	Cache.prototype = {
+		get: function (index) {
+			if (data[index] !== undefined) {
+				return data[index];
+			}
+
+			return null;
+		},
+		set: function (index, value) {
+			if (value === undefined) {
+				throw 'Cache.set(): ' + index + ' value cannot be undefined';
+			}
+
+			data[index] = value;
+		},
+		remove: function (index) {
+			delete data[index];
+		},
+		removeAll: function () {
+			data = {};
+		}
+	};
+})(akimbo);
 //#TODO: rename to Loader?
 (function (akimbo) {
 	akimbo.Component = Component;
@@ -239,36 +274,7 @@ var akimbo = {};
 
 	Config.prototype = {
 		get: function (config) {
-			if (config === 'routes') {
-				if (akimbo.App.Config.Routes === undefined) {
-					throw 'akimbo.App.Config.Routes() must be defined';
-				}
-
-				return new akimbo.App.Config.Routes().get();
-			} else if (config.indexOf('settings') !== -1) {
-				var settings = new Config.Settings();
-
-				//requested config has a . means we dont just get the root object the request is looking through a hierarchial object
-				if (config.indexOf('.') !== -1) {
-					var dropPrefix = config.replace('settings.', '');
-					var pieces = dropPrefix.split('.');
-					settings = settings.get();
-
-					//build namespace into object
-					for (var i = 0; i < pieces.length; i++) {
-						if (settings[pieces[i]] === undefined) {
-							throw '"' + config + '" config does not exist';
-							break;
-						}
-
-						settings = settings[pieces[i]];
-					}
-
-					return settings;
-				} else { //just return entire settings object
-					return settings.get();
-				}
-			}
+			return akimbo.App.Config[config];
 		}
 	};
 })(akimbo);
@@ -327,7 +333,6 @@ var akimbo = {};
 	akimbo.Router = Router;
 
 	var core = null;
-	var controller = null;
 	var busy = false;
 	var route = {};
 	var path = '';
@@ -344,7 +349,7 @@ var akimbo = {};
 		navigate: function (requestedPath, removeClassParam) {
 			var scope = this;
 			var routeExists = false;
-			//#TODO: pass segments to ALL components
+			//#TODO: pass segments to ALL controllers and child components
 			segments = requestedPath.split('/');
 			removeClass = removeClassParam === false ? false : true;
 
@@ -509,7 +514,7 @@ var akimbo = {};
 
 	function Service(params) {
 		if (params.name === undefined) {
-			throw 'Service name param must be specified';
+			throw 'Service "name" param must be specified';
 		}
 
 		this.listeners = {};
@@ -548,7 +553,7 @@ var akimbo = {};
 			scope.config = new akimbo.Config();
 			scope.cache = new akimbo.Cache();
 			scope.event = new akimbo.Event();
-		})(akimbo);
+		})(this);
 	}
 
 	Service.prototype.name = Service.name;
@@ -664,5 +669,33 @@ var akimbo = {};
 		}
 
 		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
+	};
+})(akimbo);
+(function (akimbo) {
+	akimbo.Template = Template;
+
+	function Template() {}
+
+	Template.prototype = {
+		render: function (data, html, element) {
+			//#TODO: validate data is object (or array?)
+			var output = html;
+
+			$.each(data, function (key, val) {
+				//#TODO: trim any spaces
+//				html = html.replace(/{{\s*/g, '{{');
+//				html = html.replace(/\s*}}/g, '}}');
+
+				output = output.replace(new RegExp('{{' + key + '}}', 'g'), val);
+			});
+
+			element.append(output);
+
+			element.find('a').on('click', function (e) {
+				e.preventDefault();
+			});
+
+			return output;
+		}
 	};
 })(akimbo);

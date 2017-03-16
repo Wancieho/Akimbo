@@ -16,8 +16,16 @@
 				scope.router.navigate('');
 			});
 
-			$('[name="about"]').on('click', function () {
-				scope.router.navigate('about');
+			$('[name="services"]').on('click', function () {
+				scope.router.navigate('services');
+			});
+
+			$('[name="events"]').on('click', function () {
+				scope.router.navigate('events');
+			});
+
+			$('[name="cache"]').on('click', function () {
+				scope.router.navigate('cache');
 			});
 		};
 	}
