@@ -42,8 +42,17 @@ var akimbo = {};
 		var route = '';
 
 		//refresh (F5 etc.) loads current hash
-		if (window.location.hash !== '') {
-			route = window.location.hash.replace('#', '');
+		if (history.pushState !== undefined) {
+			if (window.location.protocol === 'http:') {
+				route = location.pathname.replace('/', '');
+				console.debug(route);
+			} else {
+				route = '';
+				console.debug('else');
+				console.debug(location.pathname);
+			}
+
+			history.pushState({page: route}, null, location.pathname);
 		}
 
 		scope.router.navigate(route);

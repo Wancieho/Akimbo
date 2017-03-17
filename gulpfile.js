@@ -32,30 +32,37 @@ gulp.task('build', function () {
 });
 
 gulp.task('app', ['build'], function () {
-	return gulp.src(['tester/src/**/*.js'])
+	del([
+		'tester/src/js'
+	]);
+
+	var jquery = gulp.src('bower_components/jquery/dist/jquery.min.js')
+			.pipe(gulp.dest('tester/src/js'));
+
+	var app = gulp.src(['tester/src/**/*.js'])
 			.pipe(concat('app.js'))
-			.pipe(gulp.dest('tester'))
+			.pipe(gulp.dest('tester/src/js'))
 			.pipe(uglify())
 			.pipe(rename('app.min.js'))
-			.pipe(gulp.dest('tester'));
+			.pipe(gulp.dest('tester/src/js'));
 });
 
 gulp.task('combine', ['app'], function () {
-	return gulp.src(['dist/akimbo.js', 'tester/app.js'])
+	return gulp.src(['dist/akimbo.js', 'tester/src/js/app.js'])
 			.pipe(order([
 				'dist/akimbo.js',
-				'tester/app.js'
+				'tester/src/js/app.js'
 			]))
 			.pipe(concat('combined.min.js'))
 			.pipe(uglify())
-			.pipe(gulp.dest('tester'));
+			.pipe(gulp.dest('tester/src/js'));
 });
 
 gulp.task('encapsulate', ['combine'], function () {
-	return gulp.src('tester/combined.min.js')
+	return gulp.src('tester/src/js/combined.min.js')
 			.pipe(headerfooter.header('(function(){\n'))
 			.pipe(headerfooter.footer('\n})();'))
-			.pipe(gulp.dest('tester'));
+			.pipe(gulp.dest('tester/src/js'));
 });
 
 gulp.task('watch', function () {
