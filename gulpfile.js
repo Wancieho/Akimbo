@@ -11,19 +11,25 @@ gulp.task('default', [
 	'encapsulate'
 ]);
 
-gulp.task('clean', function () {
+gulp.task('dist-clean', function () {
 	return del([
 		'dist'
 	]);
 });
 
-gulp.task('build', function () {
-	var first = gulp.src(['src/Main.js']);
+gulp.task('tester-clean', function () {
+	return del([
+		'tester/src/js'
+	]);
+});
 
-	var second = gulp.src(['src/**/*', '!src/Main.js'])
+gulp.task('build', ['dist-clean'], function () {
+	var main = gulp.src(['src/Main.js']);
+
+	var others = gulp.src(['src/**/*', '!src/Main.js'])
 			.pipe(concat('second.js'));
 
-	return merge(first, second)
+	return merge(main, others)
 			.pipe(concat('akimbo.js'))
 			.pipe(gulp.dest('dist'))
 			.pipe(uglify())
@@ -31,15 +37,11 @@ gulp.task('build', function () {
 			.pipe(gulp.dest('dist'));
 });
 
-gulp.task('app', ['build'], function () {
-	del([
-		'tester/src/js'
-	]);
-
+gulp.task('app', ['tester-clean', 'build'], function () {
 	var jquery = gulp.src('bower_components/jquery/dist/jquery.min.js')
 			.pipe(gulp.dest('tester/src/js'));
 
-	var app = gulp.src(['tester/src/**/*.js'])
+	return gulp.src(['tester/src/**/*.js'])
 			.pipe(concat('app.js'))
 			.pipe(gulp.dest('tester/src/js'))
 			.pipe(uglify())
@@ -54,7 +56,7 @@ gulp.task('combine', ['app'], function () {
 				'tester/src/js/app.js'
 			]))
 			.pipe(concat('combined.min.js'))
-			.pipe(uglify())
+//			.pipe(uglify())
 			.pipe(gulp.dest('tester/src/js'));
 });
 

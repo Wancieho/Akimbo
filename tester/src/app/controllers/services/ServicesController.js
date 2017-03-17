@@ -12,10 +12,10 @@
 		};
 
 		this.before = function (scope) {
-			$('body').append('<p>Calling 3rd party location detection service...</p>');
+			$('[data-content]').append('<p>Calling 3rd party location detection service...</p>');
 
 			scope.locationService.listen('read.done', function (data) {
-				$('body').append(JSON.stringify(data));
+				$('[data-content]').append(JSON.stringify(data));
 			}, scope);
 
 			scope.locationService.read(scope);

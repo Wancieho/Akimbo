@@ -32,29 +32,32 @@ var akimbo = {};
 	function Main() {
 		if (instance === null) {
 			instance = this;
-			this.router = new akimbo.Router();
+			instance.router = new akimbo.Router();
 
-			loadRoute(this);
+			window.onpopstate = function (event) {
+				if (event.state) {
+//					loadRoute();
+				}
+			};
+
+			loadRoute();
 		}
 	}
 
-	function loadRoute(scope) {
+	function loadRoute() {
 		var route = '';
-
+console.debug(route);
 		//refresh (F5 etc.) loads current hash
 		if (history.pushState !== undefined) {
 			if (window.location.protocol === 'http:') {
-				route = location.pathname.replace('/', '');
-				console.debug(route);
+				route = window.location.pathname.replace('/', '');
 			} else {
 				route = '';
-				console.debug('else');
-				console.debug(location.pathname);
 			}
 
-			history.pushState({page: route}, null, location.pathname);
+			history.pushState({page: route}, null, window.location.pathname);
 		}
 
-		scope.router.navigate(route);
+		instance.router.navigate(route);
 	}
 })(akimbo);

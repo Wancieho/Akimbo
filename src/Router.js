@@ -21,7 +21,6 @@
 			//#TODO: pass segments to ALL controllers and child components
 			segments = requestedPath.split('/');
 			removeClass = removeClassParam === false ? false : true;
-//			requestedPath = requestedPath.replace('tester/', '');
 
 			if (!busy) {
 				var routes = scope.config.get('routes');
@@ -32,7 +31,7 @@
 						routeExists = true;
 						path = requestedPath;
 						route = routes[i];
-console.debug(route);
+
 						process(scope);
 					}
 				}
@@ -104,7 +103,6 @@ console.debug(route);
 	}
 
 	function destroy() {
-		console.debug(9);
 		//remove previous page element bindings
 		$('*').unbind().off().stop(true, true);
 
