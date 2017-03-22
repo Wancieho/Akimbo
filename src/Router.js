@@ -153,6 +153,7 @@
 		var controller = akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
+			//#TODO: rather generate alerts as Cordova doesnt display throws?
 			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 

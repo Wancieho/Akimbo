@@ -33,6 +33,7 @@ var akimbo = {};
 	function Main() {
 		//#TODO!: re-add anchor back if pushState not supported
 		if (history.pushState === undefined) {
+			//#TODO: rather write to document?
 			alert('history.pushState() not supported.');
 		}
 

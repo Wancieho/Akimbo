@@ -33,6 +33,7 @@ var akimbo = {};
 	function Main() {
 		//#TODO!: re-add anchor back if pushState not supported
 		if (history.pushState === undefined) {
+			//#TODO: rather write to document?
 			alert('history.pushState() not supported.');
 		}
 
@@ -109,6 +110,7 @@ var akimbo = {};
 			}
 
 			var component = new classzor();
+			component.name = functionName(classzor);
 
 			//#TODO!: remove JSON so that we dont have to cater for IE
 			var initialState = JSON.parse(JSON.stringify(component));
@@ -123,15 +125,16 @@ var akimbo = {};
 			//only check required meta properties if not Core
 			if (component instanceof akimbo.App.Core === false) {
 				if (component.meta === undefined) {
-					throw '"' + component.constructor.name + '" meta property must be defined';
+					//#TODO: implement function that gets class name
+					throw '"' + component.name + '" meta property must be defined';
 				}
 
 				if (component.meta.selector === undefined) {
-					throw '"' + component.constructor.name + '" meta property selector must be defined';
+					throw '"' + component.name + '" meta property selector must be defined';
 				}
 
 				if (component.meta.templateUrl === undefined || component.meta.templateUrl === '') {
-					throw '"' + component.constructor.name + '" meta property templateUrl must be defined';
+					throw '"' + component.name + '" meta property templateUrl must be defined';
 				}
 
 				//#TODO: check templateUrl file exists
@@ -149,13 +152,13 @@ var akimbo = {};
 						scope.event.broadcast('layout.loaded');
 					});
 				} else {
-					loadTemplateAndInitiateComponent(component, component.constructor.name);
+					loadTemplateAndInitiateComponent(component);
 				}
 			}
 
 			scope.event.listen('layout.loaded', function () {
 				if (component instanceof akimbo.App.Core === false) {
-					loadTemplateAndInitiateComponent(component, component.constructor.name);
+					loadTemplateAndInitiateComponent(component);
 				}
 			});
 
@@ -196,9 +199,13 @@ var akimbo = {};
 		}
 	};
 
-	function loadTemplateAndInitiateComponent(component, componentName) {
-		component.name = componentName;
+	function functionName(func) {
+		var f = typeof func === 'function';
+		var s = f && ((func.name && ['', func.name]) || func.toString().match(/function ([^\(]+)/));
+		return (!f && 'not a function') || (s && s[1] || 'anonymous');
+	}
 
+	function loadTemplateAndInitiateComponent(component) {
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl, function () {
 			//disable default anchor click event
 			$('a').on('click', function (e) {
@@ -491,6 +498,7 @@ var akimbo = {};
 		var controller = akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
+			//#TODO: rather generate alerts as Cordova doesnt display throws?
 			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 

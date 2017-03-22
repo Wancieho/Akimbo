@@ -51,7 +51,7 @@ gulp.task('app', ['build'], function () {
 	return gulp.src(['tester/src/app/**/*.js'])
 			.pipe(concat('app.js'))
 			.pipe(gulp.dest('tester/src/js'))
-			.pipe(uglify())
+//			.pipe(uglify())
 			.pipe(rename('app.min.js'))
 			.pipe(gulp.dest('tester/src/js'));
 });
@@ -63,7 +63,7 @@ gulp.task('combine', ['app'], function () {
 				'tester/src/js/app.js'
 			]))
 			.pipe(concat('combined.min.js'))
-			.pipe(uglify())
+//			.pipe(uglify())
 			.pipe(gulp.dest('tester/src/js'));
 });
 
