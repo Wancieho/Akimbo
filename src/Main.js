@@ -52,8 +52,6 @@ var akimbo = {};
 			} else {
 				route = '';
 			}
-console.debug(route);
-//			history.pushState({page: route}, null, window.location.pathname);
 		}
 
 		instance.router.navigate(route);

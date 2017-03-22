@@ -8,6 +8,8 @@ var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
 
 gulp.task('default', [
+	'dist-clean',
+	'tester-clean',
 	'encapsulate'
 ]);
 
@@ -23,7 +25,7 @@ gulp.task('tester-clean', function () {
 	]);
 });
 
-gulp.task('build', ['dist-clean'], function () {
+gulp.task('build', function () {
 	var main = gulp.src(['src/Main.js']);
 
 	var others = gulp.src(['src/**/*', '!src/Main.js'])
@@ -37,11 +39,16 @@ gulp.task('build', ['dist-clean'], function () {
 			.pipe(gulp.dest('dist'));
 });
 
-gulp.task('app', ['tester-clean', 'build'], function () {
+gulp.task('app', ['build'], function () {
 	var jquery = gulp.src('bower_components/jquery/dist/jquery.min.js')
 			.pipe(gulp.dest('tester/src/js'));
 
-	return gulp.src(['tester/src/**/*.js'])
+	var json = gulp.src('bower_components/JSON-js/json2.js')
+			.pipe(uglify())
+			.pipe(rename('json.min.js'))
+			.pipe(gulp.dest('tester/src/js'));
+
+	return gulp.src(['tester/src/app/**/*.js'])
 			.pipe(concat('app.js'))
 			.pipe(gulp.dest('tester/src/js'))
 			.pipe(uglify())
@@ -56,7 +63,7 @@ gulp.task('combine', ['app'], function () {
 				'tester/src/js/app.js'
 			]))
 			.pipe(concat('combined.min.js'))
-//			.pipe(uglify())
+			.pipe(uglify())
 			.pipe(gulp.dest('tester/src/js'));
 });
 
@@ -68,5 +75,5 @@ gulp.task('encapsulate', ['combine'], function () {
 });
 
 gulp.task('watch', function () {
-	gulp.watch(['src/**/*', 'tester/src/**/*.js'], ['encapsulate']);
+	gulp.watch(['src/**/*', 'tester/src/app/**/*.js'], ['encapsulate']);
 });
