@@ -9,6 +9,7 @@
 	var segments = [];
 
 	function Router() {
+		this.ignoreHistory = false;
 		this.config = new akimbo.Config();
 		this.component = new akimbo.Component();
 		this.event = new akimbo.Event();
@@ -36,39 +37,40 @@
 					}
 				}
 
-//				//if no exact match was found then check if requested path matches a {bracketed} path
-//				if (!routeExists) {
-//					$.each(scope.config.get('routes'), function () {
-//						//contains at least 1 bracket
-//						if (this.path.indexOf('{') !== -1) {
-//							var pathPieces = this.path.split('/');
-//							var segmentsMatch = true;
-//
-//							//must contain the same URI segment count
-//							if (pathPieces.length === segments.length) {
-//								for (var i in pathPieces) {
-//									//current segment doesnt contain a bracket and routes path + requested path segments dont match then we know its invalid
-//									if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
-//										segmentsMatch = false;
-//
-//										break;
-//									}
-//								}
-//							} else {
-//								segmentsMatch = false;
-//							}
-//
-//							if (segmentsMatch) {
-//								routeExists = true;
-//								path = requestedPath;
-//								route = this;
-//
-//								process.apply(scope);
-//							}
-//						}
-//					});
-//				}
+				//if no exact match was found then check if requested path matches a {bracketed} path
+				if (!routeExists) {
+					$.each(scope.config.get('routes'), function () {
+						//contains at least 1 bracket
+						if (this.path.indexOf('{') !== -1) {
+							var pathPieces = this.path.split('/');
+							var segmentsMatch = true;
 
+							//must contain the same URI segment count
+							if (pathPieces.length === segments.length) {
+								for (var i in pathPieces) {
+									//current segment doesnt contain a bracket and routes path + requested path segments dont match then we know its invalid
+									if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
+										segmentsMatch = false;
+
+										break;
+									}
+								}
+							} else {
+								segmentsMatch = false;
+							}
+
+							if (segmentsMatch) {
+								routeExists = true;
+								path = requestedPath;
+								route = this;
+
+								process.apply(scope);
+							}
+						}
+					});
+				}
+
+				//if a route is still not found then the URI is not something that exists inside Config.routes
 				if (!routeExists) {
 					throw '"' + requestedPath + '" route not found';
 				}
@@ -84,7 +86,7 @@
 
 		destroy.apply(scope);
 		loadCore.apply(scope);
-		loadController.apply(scope);
+		loadController(scope);
 		loadCoreComponents.apply(scope);
 
 		//prevent default anchor click if it has disabled attribute
@@ -92,12 +94,22 @@
 			e.preventDefault();
 		});
 
-		document.addEventListener('click', function (e) {
-			if ($(e.target).closest('a[disabled]').length) {
-				e.stopImmediatePropagation();
-				e.preventDefault();
-			}
-		}, true);
+		//#TODO: optimise?
+		if (document.addEventListener) {
+			document.addEventListener('click', function (e) {
+				if ($(e.target).closest('a[disabled]').length) {
+					e.stopImmediatePropagation();
+					e.preventDefault();
+				}
+			}, true);
+		} else {
+			document.attachEvent('onclick', function (e) {
+				if ($(e.target).closest('a[disabled]').length) {
+					e.stopImmediatePropagation();
+					e.preventDefault();
+				}
+			});
+		}
 
 		busy = false;
 	}
@@ -112,8 +124,6 @@
 
 		//remove previous page events
 		this.event.remove();
-
-		history.pushState({page: path}, null, '/' + path);
 
 		//core has been loaded then destroy
 		if (core !== null) {
@@ -139,14 +149,14 @@
 		}
 	}
 
-	function loadController() {
+	function loadController(scope) {
 		var controller = akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
 			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		controller = new this.component.load(akimbo.App.Controllers[route.controller]);
+		controller = new scope.component.load(akimbo.App.Controllers[route.controller]);
 
 		//remove body class and add if controller meta property specified
 		if (removeClass) {
@@ -157,6 +167,10 @@
 			if (controller.meta.templateClass !== undefined) {
 				$('body').addClass(controller.meta.templateClass);
 			}
+		}
+
+		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
+			history.pushState({page: path}, null, '/' + path);
 		}
 
 		controller.segments = segments;

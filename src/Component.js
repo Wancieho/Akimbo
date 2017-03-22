@@ -19,6 +19,7 @@
 
 			var component = new classzor();
 
+			//#TODO!: remove JSON so that we dont have to cater for IE
 			var initialState = JSON.parse(JSON.stringify(component));
 
 			component.getDefaultInstance = function () {

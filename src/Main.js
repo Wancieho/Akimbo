@@ -1,5 +1,6 @@
-//#TODO!: remove all jQuery
-//#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
+//#TODO!: remove unnecessary jQuery?
+;
+'use strict';
 
 var akimbo = {};
 
@@ -30,34 +31,26 @@ var akimbo = {};
 	var instance = null;
 
 	function Main() {
+		//#TODO!: re-add anchor back if pushState not supported
+		if (history.pushState === undefined) {
+			alert('history.pushState() not supported.');
+		}
+
 		if (instance === null) {
 			instance = this;
 			instance.router = new akimbo.Router();
 
-			window.onpopstate = function (event) {
-				if (event.state) {
-//					loadRoute();
-				}
+			window.onpopstate = function () {
+				instance.router.ignoreHistory = true;
+
+				navigate();
 			};
 
-			loadRoute();
+			navigate();
 		}
 	}
 
-	function loadRoute() {
-		var route = '';
-console.debug(route);
-		//refresh (F5 etc.) loads current hash
-		if (history.pushState !== undefined) {
-			if (window.location.protocol === 'http:') {
-				route = window.location.pathname.replace('/', '');
-			} else {
-				route = '';
-			}
-
-			history.pushState({page: route}, null, window.location.pathname);
-		}
-
-		instance.router.navigate(route);
+	function navigate() {
+		instance.router.navigate(window.location.pathname.replace('/', ''));
 	}
 })(akimbo);

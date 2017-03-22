@@ -1,5 +1,6 @@
-//#TODO!: remove all jQuery
-//#TODO: convert hashes to uses history.pushstate for better URIs, BUT will this work as file:// standalone?
+//#TODO!: remove unnecessary jQuery?
+;
+'use strict';
 
 var akimbo = {};
 
@@ -30,35 +31,28 @@ var akimbo = {};
 	var instance = null;
 
 	function Main() {
+		//#TODO!: re-add anchor back if pushState not supported
+		if (history.pushState === undefined) {
+			alert('history.pushState() not supported.');
+		}
+
 		if (instance === null) {
 			instance = this;
 			instance.router = new akimbo.Router();
 
-			window.onpopstate = function (event) {
-				if (event.state) {
-//					loadRoute();
-				}
+			window.onpopstate = function () {
+				instance.router.ignoreHistory = true;
+
+				navigate();
 			};
 
-			loadRoute();
+			navigate();
 		}
 	}
 
-	function loadRoute() {
-		var route = '';
-console.debug(route);
-		//refresh (F5 etc.) loads current hash
-		if (history.pushState !== undefined) {
-			if (window.location.protocol === 'http:') {
-				route = window.location.pathname.replace('/', '');
-			} else {
-				route = '';
-			}
-
-			history.pushState({page: route}, null, window.location.pathname);
-		}
-
-		instance.router.navigate(route);
+	function navigate() {
+		alert(window.location.pathname.replace('/', ''))
+		instance.router.navigate(window.location.pathname.replace('/', ''));
 	}
 })(akimbo);
 (function (akimbo) {
@@ -117,6 +111,7 @@ console.debug(route);
 
 			var component = new classzor();
 
+			//#TODO!: remove JSON so that we dont have to cater for IE
 			var initialState = JSON.parse(JSON.stringify(component));
 
 			component.getDefaultInstance = function () {
@@ -322,6 +317,7 @@ console.debug(route);
 					}
 				}
 
+				//#TODO!: remove JSON so that we dont have to cater for IE
 				if (((object === undefined || object === null) && event === this.event) || ((object !== undefined && object !== null && JSON.stringify(object) === JSON.stringify(this.object)) && event === this.event) || isWildCard) {
 					this.callback(data);
 				}
@@ -352,6 +348,7 @@ console.debug(route);
 	var segments = [];
 
 	function Router() {
+		this.ignoreHistory = false;
 		this.config = new akimbo.Config();
 		this.component = new akimbo.Component();
 		this.event = new akimbo.Event();
@@ -379,39 +376,40 @@ console.debug(route);
 					}
 				}
 
-//				//if no exact match was found then check if requested path matches a {bracketed} path
-//				if (!routeExists) {
-//					$.each(scope.config.get('routes'), function () {
-//						//contains at least 1 bracket
-//						if (this.path.indexOf('{') !== -1) {
-//							var pathPieces = this.path.split('/');
-//							var segmentsMatch = true;
-//
-//							//must contain the same URI segment count
-//							if (pathPieces.length === segments.length) {
-//								for (var i in pathPieces) {
-//									//current segment doesnt contain a bracket and routes path + requested path segments dont match then we know its invalid
-//									if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
-//										segmentsMatch = false;
-//
-//										break;
-//									}
-//								}
-//							} else {
-//								segmentsMatch = false;
-//							}
-//
-//							if (segmentsMatch) {
-//								routeExists = true;
-//								path = requestedPath;
-//								route = this;
-//
-//								process.apply(scope);
-//							}
-//						}
-//					});
-//				}
+				//if no exact match was found then check if requested path matches a {bracketed} path
+				if (!routeExists) {
+					$.each(scope.config.get('routes'), function () {
+						//contains at least 1 bracket
+						if (this.path.indexOf('{') !== -1) {
+							var pathPieces = this.path.split('/');
+							var segmentsMatch = true;
 
+							//must contain the same URI segment count
+							if (pathPieces.length === segments.length) {
+								for (var i in pathPieces) {
+									//current segment doesnt contain a bracket and routes path + requested path segments dont match then we know its invalid
+									if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
+										segmentsMatch = false;
+
+										break;
+									}
+								}
+							} else {
+								segmentsMatch = false;
+							}
+
+							if (segmentsMatch) {
+								routeExists = true;
+								path = requestedPath;
+								route = this;
+
+								process.apply(scope);
+							}
+						}
+					});
+				}
+
+				//if a route is still not found then the URI is not something that exists inside Config.routes
 				if (!routeExists) {
 					throw '"' + requestedPath + '" route not found';
 				}
@@ -427,7 +425,7 @@ console.debug(route);
 
 		destroy.apply(scope);
 		loadCore.apply(scope);
-		loadController.apply(scope);
+		loadController(scope);
 		loadCoreComponents.apply(scope);
 
 		//prevent default anchor click if it has disabled attribute
@@ -435,12 +433,22 @@ console.debug(route);
 			e.preventDefault();
 		});
 
-		document.addEventListener('click', function (e) {
-			if ($(e.target).closest('a[disabled]').length) {
-				e.stopImmediatePropagation();
-				e.preventDefault();
-			}
-		}, true);
+		//#TODO: optimise?
+		if (document.addEventListener) {
+			document.addEventListener('click', function (e) {
+				if ($(e.target).closest('a[disabled]').length) {
+					e.stopImmediatePropagation();
+					e.preventDefault();
+				}
+			}, true);
+		} else {
+			document.attachEvent('onclick', function (e) {
+				if ($(e.target).closest('a[disabled]').length) {
+					e.stopImmediatePropagation();
+					e.preventDefault();
+				}
+			});
+		}
 
 		busy = false;
 	}
@@ -455,8 +463,6 @@ console.debug(route);
 
 		//remove previous page events
 		this.event.remove();
-
-		history.pushState({page: path}, null, '/' + path);
 
 		//core has been loaded then destroy
 		if (core !== null) {
@@ -482,14 +488,14 @@ console.debug(route);
 		}
 	}
 
-	function loadController() {
+	function loadController(scope) {
 		var controller = akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
 			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		controller = new this.component.load(akimbo.App.Controllers[route.controller]);
+		controller = new scope.component.load(akimbo.App.Controllers[route.controller]);
 
 		//remove body class and add if controller meta property specified
 		if (removeClass) {
@@ -500,6 +506,10 @@ console.debug(route);
 			if (controller.meta.templateClass !== undefined) {
 				$('body').addClass(controller.meta.templateClass);
 			}
+		}
+
+		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
+			history.pushState({page: path}, null, '/' + path);
 		}
 
 		controller.segments = segments;

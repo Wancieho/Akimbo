@@ -30,6 +30,7 @@
 					}
 				}
 
+				//#TODO!: remove JSON so that we dont have to cater for IE
 				if (((object === undefined || object === null) && event === this.event) || ((object !== undefined && object !== null && JSON.stringify(object) === JSON.stringify(this.object)) && event === this.event) || isWildCard) {
 					this.callback(data);
 				}
