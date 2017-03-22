@@ -11,6 +11,12 @@
 		scope.event = new akimbo.Event();
 	}
 
+	function getFnName(fn) {
+		var f = typeof fn === 'function';
+		var s = f && ((fn.name && ['', fn.name]) || fn.toString().match(/function ([^\(]+)/));
+		return (!f && 'not a function') || (s && s[1] || 'anonymous');
+	}
+
 	Component.prototype = {
 		load: function (classzor) {
 			if (classzor === undefined) {
@@ -18,6 +24,8 @@
 			}
 
 			var component = new classzor();
+
+			component.name = getFnName(classzor);
 
 			var initialState = JSON.parse(JSON.stringify(component));
 
@@ -104,9 +112,7 @@
 		}
 	};
 
-	function loadTemplateAndInitiateComponent(component, componentName) {
-		component.name = componentName;
-
+	function loadTemplateAndInitiateComponent(component) {
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl, function () {
 			//disable default anchor click event
 			$('a').on('click', function (e) {

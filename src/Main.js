@@ -34,10 +34,8 @@ var akimbo = {};
 			instance = this;
 			instance.router = new akimbo.Router();
 
-			window.onpopstate = function (event) {
-				if (event.state) {
-//					loadRoute();
-				}
+			window.onpopstate = function () {
+				loadRoute();
 			};
 
 			loadRoute();
@@ -46,7 +44,7 @@ var akimbo = {};
 
 	function loadRoute() {
 		var route = '';
-console.debug(route);
+
 		//refresh (F5 etc.) loads current hash
 		if (history.pushState !== undefined) {
 			if (window.location.protocol === 'http:') {
@@ -54,8 +52,8 @@ console.debug(route);
 			} else {
 				route = '';
 			}
-
-			history.pushState({page: route}, null, window.location.pathname);
+console.debug(route);
+//			history.pushState({page: route}, null, window.location.pathname);
 		}
 
 		instance.router.navigate(route);

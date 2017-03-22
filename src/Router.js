@@ -113,8 +113,6 @@
 		//remove previous page events
 		this.event.remove();
 
-		history.pushState({page: path}, null, '/' + path);
-
 		//core has been loaded then destroy
 		if (core !== null) {
 			//reset Component global "layout has loaded" var to false as we are loading a new page
@@ -157,6 +155,10 @@
 			if (controller.meta.templateClass !== undefined) {
 				$('body').addClass(controller.meta.templateClass);
 			}
+		}
+
+		if ((history.length > 1 || (history.length === 1 && path !== '')) && window.location.pathname.replace('/', '') !== path) {
+			history.pushState({page: path}, null, '/' + path);
 		}
 
 		controller.segments = segments;

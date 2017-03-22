@@ -34,10 +34,8 @@ var akimbo = {};
 			instance = this;
 			instance.router = new akimbo.Router();
 
-			window.onpopstate = function (event) {
-				if (event.state) {
-//					loadRoute();
-				}
+			window.onpopstate = function () {
+				loadRoute();
 			};
 
 			loadRoute();
@@ -46,7 +44,7 @@ var akimbo = {};
 
 	function loadRoute() {
 		var route = '';
-console.debug(route);
+
 		//refresh (F5 etc.) loads current hash
 		if (history.pushState !== undefined) {
 			if (window.location.protocol === 'http:') {
@@ -54,8 +52,8 @@ console.debug(route);
 			} else {
 				route = '';
 			}
-
-			history.pushState({page: route}, null, window.location.pathname);
+console.debug(route);
+//			history.pushState({page: route}, null, window.location.pathname);
 		}
 
 		instance.router.navigate(route);
@@ -109,6 +107,12 @@ console.debug(route);
 		scope.event = new akimbo.Event();
 	}
 
+	function getFnName(fn) {
+		var f = typeof fn === 'function';
+		var s = f && ((fn.name && ['', fn.name]) || fn.toString().match(/function ([^\(]+)/));
+		return (!f && 'not a function') || (s && s[1] || 'anonymous');
+	}
+
 	Component.prototype = {
 		load: function (classzor) {
 			if (classzor === undefined) {
@@ -116,6 +120,8 @@ console.debug(route);
 			}
 
 			var component = new classzor();
+
+			component.name = getFnName(classzor);
 
 			var initialState = JSON.parse(JSON.stringify(component));
 
@@ -202,9 +208,7 @@ console.debug(route);
 		}
 	};
 
-	function loadTemplateAndInitiateComponent(component, componentName) {
-		component.name = componentName;
-
+	function loadTemplateAndInitiateComponent(component) {
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl, function () {
 			//disable default anchor click event
 			$('a').on('click', function (e) {
@@ -456,8 +460,6 @@ console.debug(route);
 		//remove previous page events
 		this.event.remove();
 
-		history.pushState({page: path}, null, '/' + path);
-
 		//core has been loaded then destroy
 		if (core !== null) {
 			//reset Component global "layout has loaded" var to false as we are loading a new page
@@ -500,6 +502,10 @@ console.debug(route);
 			if (controller.meta.templateClass !== undefined) {
 				$('body').addClass(controller.meta.templateClass);
 			}
+		}
+
+		if ((history.length > 1 || (history.length === 1 && path !== '')) && window.location.pathname.replace('/', '') !== path) {
+			history.pushState({page: path}, null, '/' + path);
 		}
 
 		controller.segments = segments;
