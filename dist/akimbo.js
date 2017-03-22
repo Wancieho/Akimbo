@@ -51,8 +51,7 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		alert(window.location.pathname.replace('/', ''))
-		instance.router.navigate(window.location.pathname.replace('/', ''));
+		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace('/', '') : '');
 	}
 })(akimbo);
 (function (akimbo) {
