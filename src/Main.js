@@ -7,17 +7,17 @@ var akimbo = {};
 /*
  * Setup namespaces & wait for document to be loaded before starting Akimbo
  */
-(function (akimbo) {
-	akimbo.App = {};
-	akimbo.App.Services = {};
-	akimbo.App.Components = {};
-	akimbo.App.Controllers = {};
-	akimbo.App.Classes = {};
-	akimbo.App.Config = {};
+(function (Akimbo) {
+	Akimbo.App = {};
+	Akimbo.App.Services = {};
+	Akimbo.App.Components = {};
+	Akimbo.App.Controllers = {};
+	Akimbo.App.Classes = {};
+	Akimbo.App.Config = {};
 
 	document.onreadystatechange = function () {
 		if (this.readyState === 'complete') {
-			new akimbo.Main();
+			new Akimbo.Main();
 		}
 	};
 })(akimbo);
@@ -25,8 +25,8 @@ var akimbo = {};
 /*
  * Entry point
  */
-(function (akimbo) {
-	akimbo.Main = Main;
+(function (Akimbo) {
+	Akimbo.Main = Main;
 
 	var instance = null;
 
@@ -39,7 +39,7 @@ var akimbo = {};
 
 		if (instance === null) {
 			instance = this;
-			instance.router = new akimbo.Router();
+			instance.router = new Akimbo.Router();
 
 			window.onpopstate = function () {
 				instance.router.ignoreHistory = true;

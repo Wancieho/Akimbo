@@ -1,6 +1,6 @@
 //#TODO: rename to Loader?
-(function (akimbo) {
-	akimbo.Component = Component;
+(function (Akimbo) {
+	Akimbo.Component = Component;
 
 	var componentsLoaded = [];
 	var scope = null;
@@ -8,7 +8,8 @@
 
 	function Component() {
 		scope = this;
-		scope.event = new akimbo.Event();
+		scope.event = new Akimbo.Event();
+		scope.helper = new Akimbo.Helper();
 	}
 
 	Component.prototype = {
@@ -18,7 +19,7 @@
 			}
 
 			var component = new classzor();
-			component.name = functionName(classzor);
+			component.name = scope.helper.functionName(classzor);
 
 			//#TODO!: remove JSON so that we dont have to cater for IE
 			var initialState = JSON.parse(JSON.stringify(component));
@@ -31,7 +32,7 @@
 			componentsLoaded.unshift(component);
 
 			//only check required meta properties if not Core
-			if (component instanceof akimbo.App.Core === false) {
+			if (component instanceof Akimbo.App.Core === false) {
 				if (component.meta === undefined) {
 					//#TODO: implement function that gets class name
 					throw '"' + component.name + '" meta property must be defined';
@@ -65,7 +66,7 @@
 			}
 
 			scope.event.listen('layout.loaded', function () {
-				if (component instanceof akimbo.App.Core === false) {
+				if (component instanceof Akimbo.App.Core === false) {
 					loadTemplateAndInitiateComponent(component);
 				}
 			});
@@ -106,12 +107,6 @@
 			$('[data-layout]').empty();
 		}
 	};
-
-	function functionName(func) {
-		var f = typeof func === 'function';
-		var s = f && ((func.name && ['', func.name]) || func.toString().match(/function ([^\(]+)/));
-		return (!f && 'not a function') || (s && s[1] || 'anonymous');
-	}
 
 	function loadTemplateAndInitiateComponent(component) {
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl, function () {
@@ -161,7 +156,7 @@
 		$('[' + component.meta.selector + ']').fadeIn(200);
 
 		//component has components specified in meta but dont load Core components just yet we do that in Akimbo.Router
-		if (component.meta.components !== undefined && component instanceof akimbo.App.Core === false) {
+		if (component.meta.components !== undefined && component instanceof Akimbo.App.Core === false) {
 			scope.loadComponents(component.meta.components);
 		}
 	}

@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.Router = Router;
+(function (Akimbo) {
+	Akimbo.Router = Router;
 
 	var core = null;
 	var busy = false;
@@ -10,9 +10,9 @@
 
 	function Router() {
 		this.ignoreHistory = false;
-		this.config = new akimbo.Config();
-		this.component = new akimbo.Component();
-		this.event = new akimbo.Event();
+		this.config = new Akimbo.Config();
+		this.component = new Akimbo.Component();
+		this.event = new Akimbo.Event();
 	}
 
 	Router.prototype = {
@@ -136,7 +136,7 @@
 	}
 
 	function loadCore() {
-		core = new this.component.load(akimbo.App.Core);
+		core = new this.component.load(Akimbo.App.Core);
 
 		//if core has a constructor method then call it now
 		if (core.constructor !== undefined) {
@@ -150,14 +150,14 @@
 	}
 
 	function loadController(scope) {
-		var controller = akimbo.App.Controllers[route.controller];
+		var controller = Akimbo.App.Controllers[route.controller];
 
 		if (controller === undefined) {
 			//#TODO: rather generate alerts as Cordova doesnt display throws?
-			throw 'akimbo.App.Controllers.' + route.controller + ' does not exist';
+			throw 'Akimbo.App.Controllers.' + route.controller + ' does not exist';
 		}
 
-		controller = new scope.component.load(akimbo.App.Controllers[route.controller]);
+		controller = new scope.component.load(Akimbo.App.Controllers[route.controller]);
 
 		//remove body class and add if controller meta property specified
 		if (removeClass) {

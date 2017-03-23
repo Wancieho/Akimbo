@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.Config = Config;
+(function (Akimbo) {
+	Akimbo.Config = Config;
 
 	var instance = null;
 
@@ -14,10 +14,10 @@
 			//requested config has a . means we dont just get the root object the request is looking through a hierarchial object
 			if (config.indexOf('.') !== -1) {
 				var pieces = config.split('.');
-				var namespace = akimbo.App.Config;
+				var namespace = new Akimbo.App.Config[pieces[0]];
 
 				//build namespace into object
-				for (var i = 0; i < pieces.length; i++) {
+				for (var i = 1; i < pieces.length; i++) {
 					if (namespace[pieces[i]] === undefined) {
 						throw '"' + config + '" config does not exist';
 						break;
@@ -28,7 +28,7 @@
 
 				return namespace;
 			} else {
-				return akimbo.App.Config[config];
+				return new Akimbo.App.Config[config];
 			}
 		}
 	};

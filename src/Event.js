@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.Event = Event;
+(function (Akimbo) {
+	Akimbo.Event = Event;
 
 	var listeners = [];
 

@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.App.Controllers.ServicesController = ServicesController;
+(function (Akimbo, $) {
+	Akimbo.App.Controllers.ServicesController = ServicesController;
 
 	function ServicesController() {
 		this.meta = {
@@ -8,17 +8,37 @@
 		};
 
 		this.constructor = function (scope) {
-			scope.locationService = new akimbo.App.Services.LocationService();
+			scope.apiService = new Akimbo.App.Services.ApiService();
+			scope.locationService = new Akimbo.App.Services.LocationService();
 		};
 
 		this.before = function (scope) {
-			$('[data-content]').append('<p>Calling 3rd party location detection service...</p>');
-
-			scope.locationService.listen('read.done', function (data) {
-				$('[data-content]').append(JSON.stringify(data));
-			}, scope);
-
-			scope.locationService.read(scope);
+			api(scope);
+			location(scope);
 		};
 	}
-})(akimbo);
+
+	function api(scope) {
+		$('[data-content]').append('<p id="api">Calling 3rd party RESTful API...</p>');
+
+		scope.apiService.listen('index.done', function (data) {
+			$('#api').hide();
+
+			$('[data-content]').append('<p>' + JSON.stringify(data) + '</p>');
+		}, scope.meta);
+
+		scope.apiService.index(null, scope.meta);
+	}
+
+	function location(scope) {
+		$('[data-content]').append('<p id="location">Calling 3rd party location detection service...</p>');
+
+		scope.locationService.listen('index.done', function (data) {
+			$('#location').hide();
+
+			$('[data-content]').append('<p>' + JSON.stringify(data) + '</p>');
+		}, scope.meta);
+
+		scope.locationService.index(null, scope.meta);
+	}
+})(akimbo, jQuery);

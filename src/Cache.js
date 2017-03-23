@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.Cache = Cache;
+(function (Akimbo) {
+	Akimbo.Cache = Cache;
 
 	var instance = null;
 	var data = {};

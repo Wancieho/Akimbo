@@ -4,6 +4,7 @@ var concat = require('gulp-concat');
 var headerfooter = require('gulp-headerfooter');
 var order = require("gulp-order");
 var rename = require('gulp-rename');
+var strip = require('gulp-strip-comments');
 var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
 
@@ -33,6 +34,7 @@ gulp.task('build', function () {
 
 	return merge(main, others)
 			.pipe(concat('akimbo.js'))
+			.pipe(strip())
 			.pipe(gulp.dest('dist'))
 			.pipe(uglify())
 			.pipe(rename('akimbo.min.js'))
@@ -51,7 +53,7 @@ gulp.task('app', ['build'], function () {
 	return gulp.src(['tester/src/app/**/*.js'])
 			.pipe(concat('app.js'))
 			.pipe(gulp.dest('tester/src/js'))
-//			.pipe(uglify())
+			.pipe(uglify())
 			.pipe(rename('app.min.js'))
 			.pipe(gulp.dest('tester/src/js'));
 });
@@ -63,7 +65,7 @@ gulp.task('combine', ['app'], function () {
 				'tester/src/js/app.js'
 			]))
 			.pipe(concat('combined.min.js'))
-//			.pipe(uglify())
+			.pipe(uglify())
 			.pipe(gulp.dest('tester/src/js'));
 });
 

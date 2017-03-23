@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.App.Controllers.CacheController = CacheController;
+(function (Akimbo) {
+	Akimbo.App.Controllers.CacheController = CacheController;
 
 	function CacheController() {
 		this.meta = {

@@ -1,15 +1,12 @@
-(function (akimbo) {
-	akimbo.Service = Service;
+(function (Akimbo) {
+	Akimbo.Service = Service;
 
-	function Service(params) {
-		if (params.name === undefined) {
-			throw 'Service "name" param must be specified';
-		}
-
+	function Service() {
 		this.listeners = {};
-		this.name = params.name;
-		this.serviceUrl = params.serviceUrl;
-		this.uri = params.uri;
+
+		this.name = '';
+		this.serviceUrl = '';
+		this.uri = '';
 		this.events = $.extend(true, {
 			create: {
 				done: 'create.done',
@@ -36,24 +33,35 @@
 				fail: 'index.fail',
 				complete: 'index.complete'
 			}
-		}, params.overrideEvents);
+		}, this.overrideEvents);
 
 		(function constructor(scope) {
-			scope.config = new akimbo.Config();
-			scope.cache = new akimbo.Cache();
-			scope.event = new akimbo.Event();
+			scope.config = new Akimbo.Config();
+			scope.cache = new Akimbo.Cache();
+			scope.event = new Akimbo.Event();
 		})(this);
 	}
 
-	Service.prototype.name = Service.name;
+	Service.prototype.validate = function () {
+		if (this.name === undefined || this.name === null || this.name === '') {
+			throw '"this.name" must be supplied.';
+		}
+
+		if (this.serviceUrl === undefined || this.serviceUrl === null || this.serviceUrl === '') {
+			throw '"this.serviceUrl" must be supplied.';
+		}
+	};
 
 	Service.prototype.create = function (params, object, overrideEvents) {
+		this.validate();
+
 		var scope = this;
 		var events = $.extend(true, this.events, overrideEvents);
 
 		this.listeners.create = $.ajax({
 			url: this.serviceUrl + '/' + this.uri,
 			type: 'POST',
+			//#TODO: only send data if something is specified for all HTTP verbs
 			data: params,
 			contentType: 'application/json'
 		}).done(function (response) {
@@ -66,6 +74,8 @@
 	};
 
 	Service.prototype.read = function (params, object, overrideEvents) {
+		this.validate();
+
 		var scope = this;
 		var events = $.extend(true, this.events, overrideEvents);
 		var identifier = 'read';
@@ -77,6 +87,7 @@
 		this.listeners.read = $.ajax({
 			url: this.serviceUrl + '/' + this.uri + '/' + identifier,
 			type: 'GET',
+			//#TODO: only send headers if specified
 			headers: params
 		}).done(function (response) {
 			scope.event.broadcast(events.read.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
@@ -88,6 +99,8 @@
 	};
 
 	Service.prototype.update = function (params, object, overrideEvents) {
+		this.validate();
+
 		var scope = this;
 		var events = $.extend(true, this.events, overrideEvents);
 
@@ -106,6 +119,8 @@
 	};
 
 	Service.prototype.destroy = function (params, object, overrideEvents) {
+		this.validate();
+
 		var scope = this;
 		var events = $.extend(true, this.events, overrideEvents);
 
@@ -124,6 +139,8 @@
 	};
 
 	Service.prototype.index = function (params, object, overrideEvents) {
+		this.validate();
+
 		var scope = this;
 		var events = $.extend(true, this.events, overrideEvents);
 

@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.App.Controllers.HomeController = HomeController;
+(function (Akimbo) {
+	Akimbo.App.Controllers.HomeController = HomeController;
 
 	function HomeController() {
 		this.meta = {

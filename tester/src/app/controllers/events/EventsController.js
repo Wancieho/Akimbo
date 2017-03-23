@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.App.Controllers.EventsController = EventsController;
+(function (Akimbo) {
+	Akimbo.App.Controllers.EventsController = EventsController;
 
 	function EventsController() {
 		this.meta = {

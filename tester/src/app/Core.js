@@ -1,10 +1,10 @@
-(function (akimbo) {
-	akimbo.App.Core = Core;
+(function (Akimbo) {
+	Akimbo.App.Core = Core;
 
 	function Core() {
 		this.meta = {
 			components: [
-				akimbo.App.Components.HeaderComponent
+				Akimbo.App.Components.HeaderComponent
 			]
 		};
 	}

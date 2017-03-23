@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.Template = Template;
+(function (Akimbo) {
+	Akimbo.Template = Template;
 
 	function Template() {}
 

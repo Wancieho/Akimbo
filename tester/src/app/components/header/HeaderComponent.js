@@ -1,5 +1,5 @@
-(function (akimbo) {
-	akimbo.App.Components.HeaderComponent = HeaderComponent;
+(function (Akimbo) {
+	Akimbo.App.Components.HeaderComponent = HeaderComponent;
 
 	function HeaderComponent() {
 		this.meta = {
@@ -8,7 +8,7 @@
 		};
 
 		this.constructor = function (scope) {
-			scope.router = new akimbo.Router();
+			scope.router = new Akimbo.Router();
 		};
 
 		this.before = function (scope) {
