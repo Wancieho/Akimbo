@@ -16,7 +16,7 @@
 				output = output.replace(new RegExp('{{' + key + '}}', 'g'), val);
 			});
 
-			element.append(output);
+			element.empty().append(output);
 
 			element.find('a').on('click', function (e) {
 				e.preventDefault();
