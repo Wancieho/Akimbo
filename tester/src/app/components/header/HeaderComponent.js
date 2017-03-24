@@ -12,19 +12,19 @@
 		};
 
 		this.before = function (scope) {
-			$('[name="home"]').on('click', function () {
+			$('[data-header] [name="home"]').on('click', function () {
 				scope.router.navigate('');
 			});
 
-			$('[name="services"]').on('click', function () {
+			$('[data-header] [name="services"]').on('click', function () {
 				scope.router.navigate('services');
 			});
 
-			$('[name="events"]').on('click', function () {
+			$('[data-header] [name="events"]').on('click', function () {
 				scope.router.navigate('events');
 			});
 
-			$('[name="cache"]').on('click', function () {
+			$('[data-header] [name="cache"]').on('click', function () {
 				scope.router.navigate('cache');
 			});
 		};

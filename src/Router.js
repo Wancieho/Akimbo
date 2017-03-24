@@ -64,7 +64,7 @@
 								path = requestedPath;
 								route = this;
 
-								process.apply(scope);
+								process(scope);
 							}
 						}
 					});
@@ -84,10 +84,10 @@
 	function process(scope) {
 		busy = true;
 
-		destroy.apply(scope);
-		loadCore.apply(scope);
+		destroy(scope);
+		loadCore(scope);
 		loadController(scope);
-		loadCoreComponents.apply(scope);
+		loadCoreComponents(scope);
 
 		//prevent default anchor click if it has disabled attribute
 		$(document).on('click', 'a[disabled]', function (e) {
@@ -114,7 +114,7 @@
 		busy = false;
 	}
 
-	function destroy() {
+	function destroy(scope) {
 		//remove previous page element bindings
 		$('*').unbind().off().stop(true, true);
 
@@ -123,20 +123,20 @@
 		$(document).off();
 
 		//remove previous page events
-		this.event.remove();
+		scope.event.remove();
 
 		//core has been loaded then destroy
 		if (core !== null) {
 			//reset Component global "layout has loaded" var to false as we are loading a new page
-			this.component.setLayoutHasLoaded(false);
+			scope.component.setLayoutHasLoaded(false);
 
 			//unload all previously loaded components
-			this.component.unload();
+			scope.component.unload();
 		}
 	}
 
-	function loadCore() {
-		core = new this.component.load(Akimbo.App.Core);
+	function loadCore(scope) {
+		core = new scope.component.load(Akimbo.App.Core);
 
 		//if core has a constructor method then call it now
 		if (core.constructor !== undefined) {
@@ -177,10 +177,8 @@
 		controller.segments = segments;
 	}
 
-	function loadCoreComponents() {
-		var scope = this;
-
-		this.event.listen('layout.loaded', function () {
+	function loadCoreComponents(scope) {
+		scope.event.listen('layout.loaded', function () {
 			new scope.component.loadComponents(core.meta.components);
 
 			//if core has an after method then call it now (add slight delay to cater for component templates loading which doesnt cater for net lag)

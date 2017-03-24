@@ -391,7 +391,7 @@ var akimbo = {};
 								path = requestedPath;
 								route = this;
 
-								process.apply(scope);
+								process(scope);
 							}
 						}
 					});
@@ -410,10 +410,10 @@ var akimbo = {};
 	function process(scope) {
 		busy = true;
 
-		destroy.apply(scope);
-		loadCore.apply(scope);
+		destroy(scope);
+		loadCore(scope);
 		loadController(scope);
-		loadCoreComponents.apply(scope);
+		loadCoreComponents(scope);
 
 		$(document).on('click', 'a[disabled]', function (e) {
 			e.preventDefault();
@@ -438,24 +438,24 @@ var akimbo = {};
 		busy = false;
 	}
 
-	function destroy() {
+	function destroy(scope) {
 		$('*').unbind().off().stop(true, true);
 
 		$(window).off();
 
 		$(document).off();
 
-		this.event.remove();
+		scope.event.remove();
 
 		if (core !== null) {
-			this.component.setLayoutHasLoaded(false);
+			scope.component.setLayoutHasLoaded(false);
 
-			this.component.unload();
+			scope.component.unload();
 		}
 	}
 
-	function loadCore() {
-		core = new this.component.load(Akimbo.App.Core);
+	function loadCore(scope) {
+		core = new scope.component.load(Akimbo.App.Core);
 
 		if (core.constructor !== undefined) {
 			core.constructor(core);
@@ -492,10 +492,8 @@ var akimbo = {};
 		controller.segments = segments;
 	}
 
-	function loadCoreComponents() {
-		var scope = this;
-
-		this.event.listen('layout.loaded', function () {
+	function loadCoreComponents(scope) {
+		scope.event.listen('layout.loaded', function () {
 			new scope.component.loadComponents(core.meta.components);
 
 			setTimeout(function () {
@@ -697,7 +695,7 @@ var akimbo = {};
 				output = output.replace(new RegExp('{{' + key + '}}', 'g'), val);
 			});
 
-			element.append(output);
+			element.empty().append(output);
 
 			element.find('a').on('click', function (e) {
 				e.preventDefault();
