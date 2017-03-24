@@ -131,7 +131,7 @@ var akimbo = {};
 				}
 
 				if (!layoutHasLoaded) {
-					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html', function () {
+					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html?' + new Date().getTime(), function () {
 						layoutHasLoaded = true;
 
 						scope.event.broadcast('layout.loaded');
@@ -177,7 +177,7 @@ var akimbo = {};
 	};
 
 	function loadTemplateAndInitiateComponent(component) {
-		$('[' + component.meta.selector + ']').load(component.meta.templateUrl, function () {
+		$('[' + component.meta.selector + ']').load(component.meta.templateUrl + '?' + new Date().getTime(), function () {
 			$('a').on('click', function (e) {
 				e.preventDefault();
 			});
@@ -679,29 +679,5 @@ var akimbo = {};
 		}
 
 		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
-	};
-})(akimbo);
-(function (Akimbo) {
-	Akimbo.Template = Template;
-
-	function Template() {}
-
-	Template.prototype = {
-		render: function (data, html, element) {
-			var output = html;
-
-			$.each(data, function (key, val) {
-
-				output = output.replace(new RegExp('{{' + key + '}}', 'g'), val);
-			});
-
-			element.empty().append(output);
-
-			element.find('a').on('click', function (e) {
-				e.preventDefault();
-			});
-
-			return output;
-		}
 	};
 })(akimbo);

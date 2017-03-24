@@ -6,5 +6,13 @@
 			selector: 'data-content',
 			templateUrl: 'src/app/controllers/cache/cache.html'
 		};
+
+		this.constructor = function (scope) {
+			scope.cache = new Akimbo.Cache();
+		};
+
+		this.before = function (scope) {
+			$('[data-content] p').append(scope.cache.get('store'));
+		};
 	}
 })(akimbo);

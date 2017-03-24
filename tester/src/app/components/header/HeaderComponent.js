@@ -12,20 +12,8 @@
 		};
 
 		this.before = function (scope) {
-			$('[data-header] [name="home"]').on('click', function () {
-				scope.router.navigate('');
-			});
-
-			$('[data-header] [name="services"]').on('click', function () {
-				scope.router.navigate('services');
-			});
-
-			$('[data-header] [name="events"]').on('click', function () {
-				scope.router.navigate('events');
-			});
-
-			$('[data-header] [name="cache"]').on('click', function () {
-				scope.router.navigate('cache');
+			$('[data-header] a').on('click', function () {
+				scope.router.navigate($(this).attr('href'));
 			});
 		};
 	}

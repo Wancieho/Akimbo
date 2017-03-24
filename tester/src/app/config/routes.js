@@ -16,6 +16,10 @@
 			{
 				path: 'cache',
 				controller: 'CacheController'
+			},
+			{
+				path: 'templates',
+				controller: 'TemplatesController'
 			}
 		];
 	};

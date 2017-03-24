@@ -9,16 +9,19 @@
 
 		this.constructor = function (scope) {
 			scope.router = new Akimbo.Router();
+			scope.cache = new Akimbo.Cache();
 		};
 
 		this.before = function (scope) {
 			events(scope);
+
+			scope.cache.set('store', 'Hello World');
 		};
 	}
 
 	function events(scope) {
-		$('[data-content] [name="events"]').on('click', function () {
-			scope.router.navigate('events');
+		$('[data-content] [href="cache"]').on('click', function () {
+			scope.router.navigate('cache');
 		});
 	}
 })(akimbo);

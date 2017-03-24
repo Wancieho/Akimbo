@@ -55,7 +55,7 @@
 				//prevent developer mistakes of loading multiple layouts per page load
 				if (!layoutHasLoaded) {
 					//#TODO!!: if default or specified layout doesnt exist then throw error
-					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html', function () {
+					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html?' + new Date().getTime(), function () {
 						layoutHasLoaded = true;
 
 						scope.event.broadcast('layout.loaded');
@@ -109,7 +109,7 @@
 	};
 
 	function loadTemplateAndInitiateComponent(component) {
-		$('[' + component.meta.selector + ']').load(component.meta.templateUrl, function () {
+		$('[' + component.meta.selector + ']').load(component.meta.templateUrl + '?' + new Date().getTime(), function () {
 			//disable default anchor click event
 			$('a').on('click', function (e) {
 				e.preventDefault();

@@ -3,7 +3,7 @@
 
 	function ApiService() {
 		this.name = new Akimbo.Helper().functionName(ApiService);
-		this.uri = 'product';
+		this.uri = 'posts';
 		this.serviceUrl = new Akimbo.Config().get('settings.serviceUrl');
 	}
 

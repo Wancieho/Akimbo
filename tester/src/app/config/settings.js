@@ -1,7 +1,7 @@
 (function (Akimbo) {
 	Akimbo.App.Config.settings = function () {
 		return {
-			serviceUrl: 'http://api.monationline'
+			serviceUrl: 'http://jsonplaceholder.typicode.com'
 		};
 	};
 })(akimbo);
