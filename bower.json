@@ -1,6 +1,6 @@
 {
   "name": "akimbo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "dist/akimbo.js",
   "ignore": [
     "src",
@@ -8,9 +8,11 @@
     ".gitignore",
     "gulpfile.js",
     "package.json"
-  ], 
+  ],
   "dependencies": {
-    "jsrender": "~0.9.84",
-    "jQuery": "^1"
+    "jquery": "^1"
+  },
+  "devDependencies": {
+    "jsrender": "^0.9.84"
   }
 }

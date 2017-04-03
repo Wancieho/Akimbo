@@ -42,7 +42,7 @@ gulp.task('build', function () {
 });
 
 gulp.task('app', ['build'], function () {
-	var jQuery = gulp.src('bower_components/jQuery/dist/jquery.min.js')
+	var jQuery = gulp.src('bower_components/jquery/dist/jquery.min.js')
 			.pipe(gulp.dest('tester/src/js'));
 
 	var jsrender = gulp.src('bower_components/jsrender/jsrender.min.js')

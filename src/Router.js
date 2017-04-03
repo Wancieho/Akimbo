@@ -136,6 +136,7 @@
 	}
 
 	function loadCore(scope) {
+		//#TODO: throw error if Core doesnt exist
 		core = new scope.component.load(Akimbo.App.Core);
 
 		//if core has a constructor method then call it now
