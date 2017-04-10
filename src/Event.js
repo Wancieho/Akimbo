@@ -3,8 +3,7 @@
 
 	var listeners = [];
 
-	function Event() {
-	}
+	function Event() {}
 
 	Event.prototype = {
 		listen: function (event, callback, object) {
