@@ -28,7 +28,7 @@ var akimbo = {};
 			alert('history.pushState() not supported.');
 		}
 
-		if (instance === null || (runningTests !== undefined && runningTests === true)) {
+		if (instance === null && window.runningTests !== true) {
 			instance = this;
 			instance.router = new Akimbo.Router();
 
