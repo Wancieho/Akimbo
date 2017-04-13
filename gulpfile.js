@@ -10,7 +10,7 @@ var merge = require('merge-stream');
 
 gulp.task('default', [
 	'dist-clean',
-	'tester-clean',
+	'implement-clean',
 	'encapsulate'
 ]);
 
@@ -20,9 +20,9 @@ gulp.task('dist-clean', function () {
 	]);
 });
 
-gulp.task('tester-clean', function () {
+gulp.task('implement-clean', function () {
 	return del([
-		'tester/src/js'
+		'implement/src/js'
 	]);
 });
 
@@ -36,44 +36,44 @@ gulp.task('build', function () {
 			.pipe(concat('akimbo.js'))
 			.pipe(strip())
 			.pipe(gulp.dest('dist'))
-			.pipe(uglify())
+			.pipe(uglify({mangle: false}))
 			.pipe(rename('akimbo.min.js'))
 			.pipe(gulp.dest('dist'));
 });
 
 gulp.task('app', ['build'], function () {
 	var jQuery = gulp.src('bower_components/jquery/dist/jquery.min.js')
-			.pipe(gulp.dest('tester/src/js'));
+			.pipe(gulp.dest('implement/src/js'));
 
 	var jsrender = gulp.src('bower_components/jsrender/jsrender.min.js')
-			.pipe(gulp.dest('tester/src/js'));
+			.pipe(gulp.dest('implement/src/js'));
 
-	return gulp.src(['tester/src/app/**/*.js'])
+	return gulp.src(['implement/src/app/**/*.js'])
 			.pipe(concat('app.js'))
-			.pipe(gulp.dest('tester/src/js'))
-			.pipe(uglify())
+			.pipe(gulp.dest('implement/src/js'))
+			.pipe(uglify({mangle: false}))
 			.pipe(rename('app.min.js'))
-			.pipe(gulp.dest('tester/src/js'));
+			.pipe(gulp.dest('implement/src/js'));
 });
 
 gulp.task('combine', ['app'], function () {
-	return gulp.src(['dist/akimbo.js', 'tester/src/js/app.js'])
+	return gulp.src(['dist/akimbo.js', 'implement/src/js/app.js'])
 			.pipe(order([
 				'dist/akimbo.js',
-				'tester/src/js/app.js'
+				'implement/src/js/app.js'
 			]))
 			.pipe(concat('combined.min.js'))
-			.pipe(uglify())
-			.pipe(gulp.dest('tester/src/js'));
+			.pipe(uglify({mangle: false}))
+			.pipe(gulp.dest('implement/src/js'));
 });
 
 gulp.task('encapsulate', ['combine'], function () {
-	return gulp.src('tester/src/js/combined.min.js')
+	return gulp.src('implement/src/js/combined.min.js')
 			.pipe(headerfooter.header('(function(){\n'))
 			.pipe(headerfooter.footer('\n})();'))
-			.pipe(gulp.dest('tester/src/js'));
+			.pipe(gulp.dest('implement/src/js'));
 });
 
 gulp.task('watch', function () {
-	gulp.watch(['src/**/*', 'tester/src/app/**/*.js'], ['encapsulate']);
+	gulp.watch(['src/**/*', 'implement/src/app/**/*.js'], ['encapsulate']);
 });

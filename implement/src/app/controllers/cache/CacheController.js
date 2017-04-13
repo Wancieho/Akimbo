@@ -11,7 +11,7 @@
 			scope.cache = new Akimbo.Cache();
 		};
 
-		this.before = function (scope) {
+		this.init = function (scope) {
 			$('[data-content] p').append(scope.cache.get('store'));
 		};
 	}

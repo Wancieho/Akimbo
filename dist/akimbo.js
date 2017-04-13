@@ -91,7 +91,6 @@ var akimbo = {};
 
 	function Component() {
 		scope = this;
-		scope.event = new Akimbo.Event();
 		scope.helper = new Akimbo.Helper();
 	}
 
@@ -131,21 +130,17 @@ var akimbo = {};
 				}
 
 				if (!layoutHasLoaded) {
+					$.ajaxSetup({async: false});
+
 					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html?' + new Date().getTime(), function () {
 						layoutHasLoaded = true;
-
-						scope.event.broadcast('layout.loaded');
 					});
-				} else {
-					loadTemplateAndInitiateComponent(component);
-				}
-			}
 
-			scope.event.listen('layout.loaded', function () {
-				if (component instanceof Akimbo.App.Core === false) {
-					loadTemplateAndInitiateComponent(component);
+					$.ajaxSetup({async: true});
 				}
-			});
+
+				loadTemplateAndInitiateComponent(component);
+			}
 
 			return component;
 		},
@@ -177,6 +172,8 @@ var akimbo = {};
 	};
 
 	function loadTemplateAndInitiateComponent(component) {
+		$.ajaxSetup({async: false});
+
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl + '?' + new Date().getTime(), function () {
 			$('a').on('click', function (e) {
 				e.preventDefault();
@@ -192,25 +189,25 @@ var akimbo = {};
 				});
 			}
 		});
+
+		$.ajaxSetup({async: true});
 	}
 
 	function initiateComponent(component) {
 		if (component.constructor !== undefined) {
-			setTimeout(function () {
-				component.constructor(component);
-			}, 100);
+			component.constructor(component);
 		}
 
-		if (component.before !== undefined) {
-			setTimeout(function () {
-				component.before(component);
-			}, 100);
+		if (component.listeners !== undefined) {
+			component.listeners(component);
 		}
 
-		if (component.after !== undefined) {
-			setTimeout(function () {
-				component.after(component);
-			}, 150);
+		if (component.events !== undefined) {
+			component.events(component);
+		}
+
+		if (component.init !== undefined) {
+			component.init(component);
 		}
 
 		$('[' + component.meta.selector + ']').fadeIn(200);
@@ -412,7 +409,6 @@ var akimbo = {};
 		destroy(scope);
 		loadCore(scope);
 		loadController(scope);
-		loadCoreComponents(scope);
 
 		$(document).on('click', 'a[disabled]', function (e) {
 			e.preventDefault();
@@ -460,9 +456,19 @@ var akimbo = {};
 			core.constructor(core);
 		}
 
-		if (core.before !== undefined) {
-			core.before(core);
+		if (core.listeners !== undefined) {
+			core.listeners(core);
 		}
+
+		if (core.events !== undefined) {
+			core.events(core);
+		}
+
+		if (core.init !== undefined) {
+			core.init(core);
+		}
+
+		new scope.component.loadComponents(core.meta.components);
 	}
 
 	function loadController(scope) {
@@ -489,18 +495,6 @@ var akimbo = {};
 		}
 
 		controller.segments = segments;
-	}
-
-	function loadCoreComponents(scope) {
-		scope.event.listen('layout.loaded', function () {
-			new scope.component.loadComponents(core.meta.components);
-
-			setTimeout(function () {
-				if (core.after !== undefined) {
-					core.after(core);
-				}
-			}, 50);
-		});
 	}
 })(akimbo);
 (function (Akimbo) {
@@ -713,6 +707,10 @@ var akimbo = {};
 
 			if (component.listeners !== undefined) {
 				component.listeners(component);
+			}
+
+			if (component.events !== undefined) {
+				component.events(component);
 			}
 
 			return component;

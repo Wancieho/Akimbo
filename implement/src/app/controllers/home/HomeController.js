@@ -12,16 +12,14 @@
 			scope.cache = new Akimbo.Cache();
 		};
 
-		this.before = function (scope) {
-			events(scope);
+		this.events = function (scope) {
+			$('[data-content] [href="cache"]').on('click', function () {
+				scope.router.navigate('cache');
+			});
+		};
 
+		this.init = function (scope) {
 			scope.cache.set('store', 'Hello World');
 		};
-	}
-
-	function events(scope) {
-		$('[data-content] [href="cache"]').on('click', function () {
-			scope.router.navigate('cache');
-		});
 	}
 })(akimbo);

@@ -87,7 +87,6 @@
 		destroy(scope);
 		loadCore(scope);
 		loadController(scope);
-		loadCoreComponents(scope);
 
 		//prevent default anchor click if it has disabled attribute
 		$(document).on('click', 'a[disabled]', function (e) {
@@ -139,15 +138,23 @@
 		//#TODO: throw error if Core doesnt exist
 		core = new scope.component.load(Akimbo.App.Core);
 
-		//if core has a constructor method then call it now
 		if (core.constructor !== undefined) {
 			core.constructor(core);
 		}
 
-		//if core has a before method then call it now
-		if (core.before !== undefined) {
-			core.before(core);
+		if (core.listeners !== undefined) {
+			core.listeners(core);
 		}
+
+		if (core.events !== undefined) {
+			core.events(core);
+		}
+
+		if (core.init !== undefined) {
+			core.init(core);
+		}
+
+		new scope.component.loadComponents(core.meta.components);
 	}
 
 	function loadController(scope) {
@@ -176,18 +183,5 @@
 		}
 
 		controller.segments = segments;
-	}
-
-	function loadCoreComponents(scope) {
-		scope.event.listen('layout.loaded', function () {
-			new scope.component.loadComponents(core.meta.components);
-
-			//if core has an after method then call it now (add slight delay to cater for component templates loading which doesnt cater for net lag)
-			setTimeout(function () {
-				if (core.after !== undefined) {
-					core.after(core);
-				}
-			}, 50);
-		});
 	}
 })(akimbo);

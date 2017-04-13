@@ -11,7 +11,7 @@
 			scope.router = new Akimbo.Router();
 		};
 
-		this.before = function (scope) {
+		this.init = function (scope) {
 			$('[data-header] a').on('click', function () {
 				scope.router.navigate($(this).attr('href'));
 			});

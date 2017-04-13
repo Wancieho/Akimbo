@@ -11,11 +11,13 @@
 			scope.event = new Akimbo.Event();
 		};
 
-		this.before = function (scope) {
+		this.listeners = function (scope) {
 			scope.event.listen('loaded', function () {
 				$('[data-content]').append('<p>"loaded" event caught</p>');
 			});
+		};
 
+		this.init = function (scope) {
 			scope.event.broadcast('loaded');
 		};
 	}

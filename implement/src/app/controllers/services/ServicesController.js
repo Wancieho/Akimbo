@@ -11,16 +11,14 @@
 			scope.locationService = new Akimbo.App.Services.LocationService();
 		};
 
-		this.before = function (scope) {
-			location(scope);
+		this.listeners = function (scope) {
+			scope.locationService.listen('index.done', function (data) {
+				$('[data-content] div').html(JSON.stringify(data));
+			}, scope.getDefaultInstance());
 		};
-	}
 
-	function location(scope) {
-		scope.locationService.listen('index.done', function (data) {
-			$('[data-content] div').html(JSON.stringify(data));
-		}, scope.meta);
-
-		scope.locationService.index(null, scope.meta);
+		this.init = function (scope) {
+			scope.locationService.index(null, scope.getDefaultInstance());
+		};
 	}
 })(akimbo, jQuery);

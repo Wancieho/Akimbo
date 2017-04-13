@@ -33,6 +33,10 @@
 				component.listeners(component);
 			}
 
+			if (component.events !== undefined) {
+				component.events(component);
+			}
+
 			return component;
 		}
 	};

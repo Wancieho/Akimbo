@@ -8,7 +8,6 @@
 
 	function Component() {
 		scope = this;
-		scope.event = new Akimbo.Event();
 		scope.helper = new Akimbo.Helper();
 	}
 
@@ -54,22 +53,18 @@
 
 				//prevent developer mistakes of loading multiple layouts per page load
 				if (!layoutHasLoaded) {
+					$.ajaxSetup({async: false});
+
 					//#TODO!!: if default or specified layout doesnt exist then throw error
 					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html?' + new Date().getTime(), function () {
 						layoutHasLoaded = true;
-
-						scope.event.broadcast('layout.loaded');
 					});
-				} else {
-					loadTemplateAndInitiateComponent(component);
-				}
-			}
 
-			scope.event.listen('layout.loaded', function () {
-				if (component instanceof Akimbo.App.Core === false) {
-					loadTemplateAndInitiateComponent(component);
+					$.ajaxSetup({async: true});
 				}
-			});
+
+				loadTemplateAndInitiateComponent(component);
+			}
 
 			return component;
 		},
@@ -109,6 +104,8 @@
 	};
 
 	function loadTemplateAndInitiateComponent(component) {
+		$.ajaxSetup({async: false});
+
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl + '?' + new Date().getTime(), function () {
 			//disable default anchor click event
 			$('a').on('click', function (e) {
@@ -126,31 +123,25 @@
 				});
 			}
 		});
+
+		$.ajaxSetup({async: true});
 	}
 
 	function initiateComponent(component) {
-		//call constructor method if it exists
 		if (component.constructor !== undefined) {
-			//#TODO: remove once new structure implemented
-			setTimeout(function () {
-				component.constructor(component);
-			}, 100);
+			component.constructor(component);
 		}
 
-		//call before method if it exists
-		if (component.before !== undefined) {
-			//#TODO: remove once new structure implemented
-			setTimeout(function () {
-				component.before(component);
-			}, 100);
+		if (component.listeners !== undefined) {
+			component.listeners(component);
 		}
 
-		//call after method if it exists
-		if (component.after !== undefined) {
-			//#TODO: remove once new structure implemented
-			setTimeout(function () {
-				component.after(component);
-			}, 150);
+		if (component.events !== undefined) {
+			component.events(component);
+		}
+
+		if (component.init !== undefined) {
+			component.init(component);
 		}
 
 		$('[' + component.meta.selector + ']').fadeIn(200);
