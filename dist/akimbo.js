@@ -248,20 +248,31 @@ var akimbo = {};
 		get: function (config) {
 			if (config.indexOf('.') !== -1) {
 				var pieces = config.split('.');
-				var namespace = new Akimbo.App.Config[pieces[0]];
+				var namespace = Akimbo.App.Config[pieces[0]];
 
-				for (var i = 1; i < pieces.length; i++) {
-					if (namespace[pieces[i]] === undefined) {
-						throw '"' + config + '" config does not exist';
-						break;
-					}
-
-					namespace = namespace[pieces[i]];
+				if (namespace === undefined) {
+					return null;
 				}
 
-				return namespace;
+				var namespaces = new namespace;
+
+				for (var i = 1; i < pieces.length; i++) {
+					if (namespaces[pieces[i]] === undefined) {
+						return null;
+					}
+
+					namespaces = namespaces[pieces[i]];
+				}
+
+				return namespaces;
 			} else {
-				return new Akimbo.App.Config[config];
+				var chunk = Akimbo.App.Config[config];
+
+				if (chunk === undefined) {
+					return null;
+				}
+
+				return new chunk;
 			}
 		}
 	};

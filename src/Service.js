@@ -52,6 +52,7 @@
 		}
 	};
 
+	//#TODO: change all params to object for all methods
 	Service.prototype.create = function (params, object, overrideEvents) {
 		this.validate();
 

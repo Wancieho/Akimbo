@@ -1,5 +1,5 @@
 (function (Akimbo, $, QUnit) {
-	function Api() {
+	function TestApi() {
 		(function constructor(scope) {
 			scope.locationService = new Akimbo.App.Services.LocationService();
 			scope.apiService = new Akimbo.App.Services.ApiService();
@@ -38,7 +38,9 @@
 
 			scope.apiService.index(null, scope);
 		});
+
+		//#TODO: add test for overriding events
 	}
 
-	new Api();
+	new TestApi();
 })(akimbo, jQuery, QUnit);

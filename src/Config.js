@@ -14,21 +14,32 @@
 			//requested config has a . means we dont just get the root object the request is looking through a hierarchial object
 			if (config.indexOf('.') !== -1) {
 				var pieces = config.split('.');
-				var namespace = new Akimbo.App.Config[pieces[0]];
+				var namespace = Akimbo.App.Config[pieces[0]];
+
+				if (namespace === undefined) {
+					return null;
+				}
+
+				var namespaces = new namespace;
 
 				//build namespace into object
 				for (var i = 1; i < pieces.length; i++) {
-					if (namespace[pieces[i]] === undefined) {
-						throw '"' + config + '" config does not exist';
-						break;
+					if (namespaces[pieces[i]] === undefined) {
+						return null;
 					}
 
-					namespace = namespace[pieces[i]];
+					namespaces = namespaces[pieces[i]];
 				}
 
-				return namespace;
+				return namespaces;
 			} else {
-				return new Akimbo.App.Config[config];
+				var chunk = Akimbo.App.Config[config];
+
+				if (chunk === undefined) {
+					return null;
+				}
+
+				return new chunk;
 			}
 		}
 	};
