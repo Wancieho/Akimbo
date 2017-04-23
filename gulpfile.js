@@ -7,6 +7,7 @@ var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
 
 gulp.task('default', [
+	'akimbo',
 	'app'
 ]);
 
@@ -37,7 +38,7 @@ gulp.task('akimbo', ['dist-clean'], function () {
 			.pipe(gulp.dest('dist'));
 });
 
-gulp.task('app', ['demo-clean'], function () {
+gulp.task('app', ['demo-clean', 'akimbo'], function () {
 	var jQuery = gulp.src('bower_components/jquery/dist/jquery.min.js')
 			.pipe(gulp.dest('demo/src/js'));
 
