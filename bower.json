@@ -4,7 +4,6 @@
   "main": "dist/akimbo.js",
   "ignore": [
     "src",
-    "implement",
     "tests",
     ".gitignore",
     "gulpfile.js",

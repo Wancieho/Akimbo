@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Akimbo implement</title>
+        <title>Akimbo demo</title>
 		<script type="text/javascript">
 			document.write('<base href="' + window.location.href.replace('index.html', '') + '"/>');
 		</script>
@@ -9,7 +9,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<script src="src/js/jquery.min.js" type="text/javascript"></script>
 		<script src="src/js/jsrender.min.js" type="text/javascript"></script>
-		<script src="src/js/combined.min.js" type="text/javascript"></script>
+		<script src="src/js/akimbo.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			(function ($) {
+				var element = document.createElement('script');
+				element.type = 'text/javascript';
+				element.src = 'src/js/app.min.js?' + new Date().getTime();
+
+				$('head').append(element);
+			})(jQuery);
+		</script>
+		<script type="text/javascript">
+			(function ($, Akimbo) {
+				$(document).ready(function () {
+					Akimbo.start();
+				});
+			})(jQuery, akimbo);
+		</script>
 		<style type="text/css">
 			.clearfix:before,
 			.clearfix:after{

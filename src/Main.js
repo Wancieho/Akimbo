@@ -15,10 +15,8 @@ var akimbo = {};
 	Akimbo.App.Classes = {};
 	Akimbo.App.Config = {};
 
-	document.onreadystatechange = function () {
-		if (this.readyState === 'complete') {
-			new Akimbo.Main();
-		}
+	Akimbo.start = function () {
+		new Akimbo.Main();
 	};
 })(akimbo);
 
@@ -33,7 +31,6 @@ var akimbo = {};
 	function Main() {
 		//#TODO!: re-add anchor back if pushState not supported
 		if (history.pushState === undefined) {
-			//#TODO: rather write to document?
 			alert('history.pushState() not supported.');
 		}
 

@@ -11,10 +11,8 @@ var akimbo = {};
 	Akimbo.App.Classes = {};
 	Akimbo.App.Config = {};
 
-	document.onreadystatechange = function () {
-		if (this.readyState === 'complete') {
-			new Akimbo.Main();
-		}
+	Akimbo.start = function () {
+		new Akimbo.Main();
 	};
 })(akimbo);
 
