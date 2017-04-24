@@ -13,6 +13,7 @@
 		this.config = new Akimbo.Config();
 		this.component = new Akimbo.Component();
 		this.event = new Akimbo.Event();
+		this.cache = new Akimbo.Cache();
 	}
 
 	Router.prototype = {
@@ -21,6 +22,7 @@
 			var routeExists = false;
 			//#TODO: pass segments to ALL controllers and child components
 			segments = requestedPath.split('/');
+			scope.cache.set('segments', segments);
 			removeClass = removeClassParam === false ? false : true;
 
 			if (!busy) {
@@ -181,7 +183,5 @@
 		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
 			history.pushState({page: path}, null, '/' + path);
 		}
-
-		controller.segments = segments;
 	}
 })(akimbo);

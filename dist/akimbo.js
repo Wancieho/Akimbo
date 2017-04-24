@@ -90,6 +90,7 @@ var akimbo = {};
 	function Component() {
 		scope = this;
 		scope.helper = new Akimbo.Helper();
+		scope.cache = new Akimbo.Cache();
 	}
 
 	Component.prototype = {
@@ -100,6 +101,7 @@ var akimbo = {};
 
 			var component = new classzor();
 			component.name = scope.helper.functionName(classzor);
+			component.segments = scope.cache.get('segments');
 
 			var initialState = JSON.parse(JSON.stringify(component));
 
@@ -351,6 +353,7 @@ var akimbo = {};
 		this.config = new Akimbo.Config();
 		this.component = new Akimbo.Component();
 		this.event = new Akimbo.Event();
+		this.cache = new Akimbo.Cache();
 	}
 
 	Router.prototype = {
@@ -358,6 +361,7 @@ var akimbo = {};
 			var scope = this;
 			var routeExists = false;
 			segments = requestedPath.split('/');
+			scope.cache.set('segments', segments);
 			removeClass = removeClassParam === false ? false : true;
 
 			if (!busy) {
@@ -502,8 +506,6 @@ var akimbo = {};
 		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
 			history.pushState({page: path}, null, '/' + path);
 		}
-
-		controller.segments = segments;
 	}
 })(akimbo);
 (function (Akimbo) {

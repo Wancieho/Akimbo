@@ -9,6 +9,7 @@
 	function Component() {
 		scope = this;
 		scope.helper = new Akimbo.Helper();
+		scope.cache = new Akimbo.Cache();
 	}
 
 	Component.prototype = {
@@ -19,6 +20,7 @@
 
 			var component = new classzor();
 			component.name = scope.helper.functionName(classzor);
+			component.segments = scope.cache.get('segments');
 
 			//#TODO!: remove JSON so that we dont have to cater for IE
 			var initialState = JSON.parse(JSON.stringify(component));
