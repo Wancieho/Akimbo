@@ -72,10 +72,11 @@ var akimbo = {};
 			data[index] = value;
 		},
 		remove: function (index) {
-			delete data[index];
-		},
-		removeAll: function () {
-			data = {};
+			if (index !== undefined) {
+				delete data[index];
+			} else {
+				data = {};
+			}
 		}
 	};
 })(akimbo);
@@ -480,8 +481,6 @@ var akimbo = {};
 		if (core.init !== undefined) {
 			core.init(core);
 		}
-
-		new scope.component.loadComponents(core.meta.components);
 	}
 
 	function loadController(scope) {
@@ -506,6 +505,8 @@ var akimbo = {};
 		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
 			history.pushState({page: path}, null, '/' + path);
 		}
+
+		new scope.component.loadComponents(core.meta.components);
 	}
 })(akimbo);
 (function (Akimbo) {

@@ -155,8 +155,6 @@
 		if (core.init !== undefined) {
 			core.init(core);
 		}
-
-		new scope.component.loadComponents(core.meta.components);
 	}
 
 	function loadController(scope) {
@@ -183,5 +181,8 @@
 		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
 			history.pushState({page: path}, null, '/' + path);
 		}
+
+		//only load core once the controller has loaded
+		new scope.component.loadComponents(core.meta.components);
 	}
 })(akimbo);
