@@ -365,7 +365,6 @@ var akimbo = {};
 			scope.cache.set('segments', segments);
 			removeClass = removeClassParam === false ? false : true;
 
-			if (!busy) {
 				var routes = scope.config.get('routes');
 
 				for (var i in scope.config.get('routes')) {
@@ -410,7 +409,6 @@ var akimbo = {};
 				if (!routeExists) {
 					throw '"' + requestedPath + '" route not found';
 				}
-			}
 		},
 		isProtectedRoute: function () {
 			return route.protected;

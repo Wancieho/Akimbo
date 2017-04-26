@@ -25,7 +25,7 @@
 			scope.cache.set('segments', segments);
 			removeClass = removeClassParam === false ? false : true;
 
-			if (!busy) {
+//			if (!busy) {
 				var routes = scope.config.get('routes');
 
 				for (var i in scope.config.get('routes')) {
@@ -76,7 +76,7 @@
 				if (!routeExists) {
 					throw '"' + requestedPath + '" route not found';
 				}
-			}
+//			}
 		},
 		isProtectedRoute: function () {
 			return route.protected;
