@@ -14,11 +14,11 @@
 		this.listeners = function (scope) {
 			scope.locationService.listen('index.done', function (data) {
 				$('[data-content] div').html(JSON.stringify(data));
-			}, scope.getDefaultInstance());
+			}, scope.instance);
 		};
 
 		this.init = function (scope) {
-			scope.locationService.index(null, scope.getDefaultInstance());
+			scope.locationService.index(null, scope.instance);
 		};
 	}
 })(akimbo, jQuery);

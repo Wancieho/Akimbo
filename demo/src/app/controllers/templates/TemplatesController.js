@@ -14,11 +14,11 @@
 		this.listeners = function (scope) {
 			scope.apiService.listen('index.done', function (data) {
 				$('[data-content] ul').html($('#items').render(data));
-			}, scope.getDefaultInstance());
+			}, scope.instance);
 		};
 
 		this.init = function (scope) {
-			scope.apiService.index(null, scope.getDefaultInstance());
+			scope.apiService.index(null, scope.instance);
 		};
 	}
 })(akimbo);

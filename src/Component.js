@@ -1,5 +1,5 @@
 //#TODO: rename to Loader?
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Component = Component;
 
 	var componentsLoaded = [];
@@ -23,11 +23,7 @@
 			component.segments = scope.cache.get('segments');
 
 			//#TODO!: remove JSON so that we dont have to cater for IE
-			var initialState = JSON.parse(JSON.stringify(component));
-
-			component.getDefaultInstance = function () {
-				return initialState;
-			};
+			component.instance = JSON.parse(JSON.stringify(component));
 
 			//add this component to componentsLoaded array for later unloading
 			componentsLoaded.unshift(component);
@@ -57,7 +53,8 @@
 				if (!layoutHasLoaded) {
 					$.ajaxSetup({async: false});
 
-					//#TODO!!: if default or specified layout doesnt exist then throw error
+					//#TODO!: if default or specified layout doesnt exist then throw error
+					//#TODO!: convert to AJAX + async?
 					$('[data-layout]').load('src/app/layouts/' + component.meta.layout + '.html?' + new Date().getTime(), function () {
 						layoutHasLoaded = true;
 					});
@@ -106,8 +103,7 @@
 	};
 
 	function loadTemplateAndInitiateComponent(component) {
-		$.ajaxSetup({async: false});
-
+		//#TODO!: convert to AJAX + async?
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl + '?' + new Date().getTime(), function () {
 			//disable default anchor click event
 			$('a').on('click', function (e) {
@@ -125,8 +121,6 @@
 				});
 			}
 		});
-
-		$.ajaxSetup({async: true});
 	}
 
 	function initiateComponent(component) {
@@ -169,4 +163,4 @@
 			}
 		});
 	}
-})(akimbo);
+})(akimbo, jQuery);

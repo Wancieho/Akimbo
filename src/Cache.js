@@ -26,10 +26,11 @@
 			data[index] = value;
 		},
 		remove: function (index) {
-			delete data[index];
-		},
-		removeAll: function () {
-			data = {};
+			if (index !== undefined) {
+				delete data[index];
+			} else {
+				data = {};
+			}
 		}
 	};
 })(akimbo);
