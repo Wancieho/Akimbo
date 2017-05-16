@@ -26,7 +26,7 @@ var akimbo = {};
 			alert('history.pushState() not supported.');
 		}
 
-		if (instance === null && window.runningTests !== true) {
+		if (instance === null) {
 			instance = this;
 			instance.router = new Akimbo.Router();
 
@@ -41,7 +41,7 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '', '') : '');
+		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '/', '') : '');
 	}
 })(akimbo);
 (function (Akimbo) {
@@ -81,7 +81,7 @@ var akimbo = {};
 	};
 })(akimbo);
 
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Component = Component;
 
 	var componentsLoaded = [];
@@ -104,11 +104,7 @@ var akimbo = {};
 			component.name = scope.helper.functionName(classzor);
 			component.segments = scope.cache.get('segments');
 
-			var initialState = JSON.parse(JSON.stringify(component));
-
-			component.getDefaultInstance = function () {
-				return initialState;
-			};
+			component.instance = JSON.parse(JSON.stringify(component));
 
 			componentsLoaded.unshift(component);
 
@@ -173,8 +169,6 @@ var akimbo = {};
 	};
 
 	function loadTemplateAndInitiateComponent(component) {
-		$.ajaxSetup({async: false});
-
 		$('[' + component.meta.selector + ']').load(component.meta.templateUrl + '?' + new Date().getTime(), function () {
 			$('a').on('click', function (e) {
 				e.preventDefault();
@@ -190,8 +184,6 @@ var akimbo = {};
 				});
 			}
 		});
-
-		$.ajaxSetup({async: true});
 	}
 
 	function initiateComponent(component) {
@@ -233,7 +225,7 @@ var akimbo = {};
 			}
 		});
 	}
-})(akimbo);
+})(akimbo, jQuery);
 (function (Akimbo) {
 	Akimbo.Config = Config;
 
@@ -397,7 +389,7 @@ var akimbo = {};
 
 						if (segmentsMatch) {
 							routeExists = true;
-							path = requestedPath;
+							path = requestedPath.replace(basePath(scope), '');
 							route = this;
 
 							process(scope);

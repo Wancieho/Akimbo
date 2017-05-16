@@ -38,7 +38,7 @@
 				}
 			}
 
-			//if no exact match was found then check if requested path matches a {bracketed} path
+			//if no exact match was found then check if requested path matches a {dynamic} path
 			if (!routeExists) {
 				$.each(scope.config.get('routes'), function () {
 					//contains at least 1 bracket
@@ -62,7 +62,9 @@
 
 						if (segmentsMatch) {
 							routeExists = true;
-							path = requestedPath;
+							//#TODO: create unit test
+							//#TODO!: test as placing in a folder could affect this
+							path = requestedPath.replace(basePath(scope), '');
 							route = this;
 
 							process(scope);

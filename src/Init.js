@@ -34,7 +34,7 @@ var akimbo = {};
 			alert('history.pushState() not supported.');
 		}
 
-		if (instance === null && window.runningTests !== true) {
+		if (instance === null) {
 			instance = this;
 			instance.router = new Akimbo.Router();
 
@@ -49,6 +49,6 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '', '') : '');
+		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '/', '') : '');
 	}
 })(akimbo);
