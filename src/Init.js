@@ -16,7 +16,7 @@ var akimbo = {};
 	Akimbo.App.Config = {};
 
 	Akimbo.start = function () {
-		new Akimbo.Main();
+		new Akimbo.Init();
 	};
 })(akimbo);
 
@@ -24,11 +24,11 @@ var akimbo = {};
  * Entry point
  */
 (function (Akimbo) {
-	Akimbo.Main = Main;
+	Akimbo.Init = Init;
 
 	var instance = null;
 
-	function Main() {
+	function Init() {
 		//#TODO!: re-add anchor back if pushState not supported
 		if (history.pushState === undefined) {
 			alert('history.pushState() not supported.');
@@ -49,6 +49,6 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace('/', '') : '');
+		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '', '') : '');
 	}
 })(akimbo);

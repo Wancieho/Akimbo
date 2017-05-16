@@ -7,7 +7,6 @@ var uglify = require('gulp-uglify');
 var merge = require('merge-stream');
 
 gulp.task('default', [
-	'akimbo',
 	'app'
 ]);
 
@@ -24,12 +23,12 @@ gulp.task('demo-clean', function () {
 });
 
 gulp.task('akimbo', ['dist-clean'], function () {
-	var main = gulp.src(['src/Main.js']);
+	var init = gulp.src(['src/Init.js']);
 
-	var others = gulp.src(['src/**/*', '!src/Main.js'])
-			.pipe(concat('second.js'));
+	var others = gulp.src(['src/**/*', '!src/Init.js'])
+			.pipe(concat('others.js'));
 
-	return merge(main, others)
+	return merge(init, others)
 			.pipe(concat('akimbo.js'))
 			.pipe(strip())
 			.pipe(gulp.dest('dist'))
@@ -57,6 +56,5 @@ gulp.task('app', ['demo-clean', 'akimbo'], function () {
 });
 
 gulp.task('watch', function () {
-	gulp.watch('src/**/*', ['akimbo']);
-	gulp.watch('demo/src/app/**/*.js', ['app']);
+	gulp.watch(['demo/src/app/**/*.js', 'src/**/*'], ['app']);
 });

@@ -1,8 +1,8 @@
-(function (Akimbo) {
+//#TODO: add jQuery as param to all classes
+(function (Akimbo, $) {
 	Akimbo.Router = Router;
 
 	var core = null;
-	var busy = false;
 	var route = {};
 	var path = '';
 	var removeClass = true;
@@ -20,63 +20,61 @@
 		navigate: function (requestedPath, removeClassParam) {
 			var scope = this;
 			var routeExists = false;
+			var routes = scope.config.get('routes');
+
 			//#TODO: pass segments to ALL controllers and child components
 			segments = requestedPath.split('/');
-			scope.cache.set('segments', segments);
 			removeClass = removeClassParam === false ? false : true;
+			scope.cache.set('segments', segments);
 
-//			if (!busy) {
-				var routes = scope.config.get('routes');
+			for (var i in scope.config.get('routes')) {
+				//requested path matches a path in the routes config exactly
+				if (requestedPath.replace(basePath(scope), '') === routes[i].path) {
+					routeExists = true;
+					path = requestedPath.replace(basePath(scope), '');
+					route = routes[i];
 
-				for (var i in scope.config.get('routes')) {
-					//requested path matches a path in the routes config exactly
-					if (requestedPath === routes[i].path) {
-						routeExists = true;
-						path = requestedPath;
-						route = routes[i];
-
-						process(scope);
-					}
+					process(scope);
 				}
+			}
 
-				//if no exact match was found then check if requested path matches a {bracketed} path
-				if (!routeExists) {
-					$.each(scope.config.get('routes'), function () {
-						//contains at least 1 bracket
-						if (this.path.indexOf('{') !== -1) {
-							var pathPieces = this.path.split('/');
-							var segmentsMatch = true;
+			//if no exact match was found then check if requested path matches a {bracketed} path
+			if (!routeExists) {
+				$.each(scope.config.get('routes'), function () {
+					//contains at least 1 bracket
+					if (this.path.indexOf('{') !== -1) {
+						var pathPieces = this.path.split('/');
+						var segmentsMatch = true;
 
-							//must contain the same URI segment count
-							if (pathPieces.length === segments.length) {
-								for (var i in pathPieces) {
-									//current segment doesnt contain a bracket and routes path + requested path segments dont match then we know its invalid
-									if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
-										segmentsMatch = false;
+						//must contain the same URI segment count
+						if (pathPieces.length === segments.length) {
+							for (var i in pathPieces) {
+								//current segment doesnt contain a bracket and routes path + requested path segments dont match then we know its invalid
+								if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
+									segmentsMatch = false;
 
-										break;
-									}
+									break;
 								}
-							} else {
-								segmentsMatch = false;
 							}
-
-							if (segmentsMatch) {
-								routeExists = true;
-								path = requestedPath;
-								route = this;
-
-								process(scope);
-							}
+						} else {
+							segmentsMatch = false;
 						}
-					});
-				}
 
-				//if a route is still not found then the URI is not something that exists inside Config.routes
-				if (!routeExists) {
-					throw '"' + requestedPath + '" route not found';
-				}
-//			}
+						if (segmentsMatch) {
+							routeExists = true;
+							path = requestedPath;
+							route = this;
+
+							process(scope);
+						}
+					}
+				});
+			}
+
+			//if a route is still not found then the URI is not something that exists inside Config.routes
+			if (!routeExists) {
+				throw '"' + requestedPath + '" route not found';
+			}
 		},
 		isProtectedRoute: function () {
 			return route.protected;
@@ -84,8 +82,6 @@
 	};
 
 	function process(scope) {
-		busy = true;
-
 		destroy(scope);
 		loadCore(scope);
 		loadController(scope);
@@ -111,8 +107,6 @@
 				}
 			});
 		}
-
-		busy = false;
 	}
 
 	function destroy(scope) {
@@ -179,10 +173,16 @@
 		}
 
 		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
-			history.pushState({page: path}, null, '/' + path);
+			path = path === '' ? '/' + basePath(scope) : path;
+
+			history.pushState({page: path}, null, path);
 		}
 
 		//only load core once the controller has loaded
 		new scope.component.loadComponents(core.meta.components);
 	}
-})(akimbo);
+
+	function basePath(scope) {
+		return scope.config.get('settings.basePath') !== null ? scope.config.get('settings.basePath') + '/' : '';
+	}
+})(akimbo, jQuery);

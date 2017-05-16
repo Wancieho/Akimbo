@@ -12,16 +12,16 @@ var akimbo = {};
 	Akimbo.App.Config = {};
 
 	Akimbo.start = function () {
-		new Akimbo.Main();
+		new Akimbo.Init();
 	};
 })(akimbo);
 
 (function (Akimbo) {
-	Akimbo.Main = Main;
+	Akimbo.Init = Init;
 
 	var instance = null;
 
-	function Main() {
+	function Init() {
 		if (history.pushState === undefined) {
 			alert('history.pushState() not supported.');
 		}
@@ -41,7 +41,7 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace('/', '') : '');
+		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '', '') : '');
 	}
 })(akimbo);
 (function (Akimbo) {
@@ -339,11 +339,11 @@ var akimbo = {};
 		}
 	};
 })(akimbo);
-(function (Akimbo) {
+
+(function (Akimbo, $) {
 	Akimbo.Router = Router;
 
 	var core = null;
-	var busy = false;
 	var route = {};
 	var path = '';
 	var removeClass = true;
@@ -361,54 +361,54 @@ var akimbo = {};
 		navigate: function (requestedPath, removeClassParam) {
 			var scope = this;
 			var routeExists = false;
+			var routes = scope.config.get('routes');
+
 			segments = requestedPath.split('/');
-			scope.cache.set('segments', segments);
 			removeClass = removeClassParam === false ? false : true;
+			scope.cache.set('segments', segments);
 
-				var routes = scope.config.get('routes');
+			for (var i in scope.config.get('routes')) {
+				if (requestedPath.replace(basePath(scope), '') === routes[i].path) {
+					routeExists = true;
+					path = requestedPath.replace(basePath(scope), '');
+					route = routes[i];
 
-				for (var i in scope.config.get('routes')) {
-					if (requestedPath === routes[i].path) {
-						routeExists = true;
-						path = requestedPath;
-						route = routes[i];
-
-						process(scope);
-					}
+					process(scope);
 				}
+			}
 
-				if (!routeExists) {
-					$.each(scope.config.get('routes'), function () {
-						if (this.path.indexOf('{') !== -1) {
-							var pathPieces = this.path.split('/');
-							var segmentsMatch = true;
+			if (!routeExists) {
+				$.each(scope.config.get('routes'), function () {
+					if (this.path.indexOf('{') !== -1) {
+						var pathPieces = this.path.split('/');
+						var segmentsMatch = true;
 
-							if (pathPieces.length === segments.length) {
-								for (var i in pathPieces) {
-									if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
-										segmentsMatch = false;
+						if (pathPieces.length === segments.length) {
+							for (var i in pathPieces) {
+								if (pathPieces[i].indexOf('{') === -1 && pathPieces[i] !== segments[i]) {
+									segmentsMatch = false;
 
-										break;
-									}
+									break;
 								}
-							} else {
-								segmentsMatch = false;
 							}
-
-							if (segmentsMatch) {
-								routeExists = true;
-								path = requestedPath;
-								route = this;
-
-								process(scope);
-							}
+						} else {
+							segmentsMatch = false;
 						}
-					});
-				}
 
-				if (!routeExists) {
-					throw '"' + requestedPath + '" route not found';
-				}
+						if (segmentsMatch) {
+							routeExists = true;
+							path = requestedPath;
+							route = this;
+
+							process(scope);
+						}
+					}
+				});
+			}
+
+			if (!routeExists) {
+				throw '"' + requestedPath + '" route not found';
+			}
 		},
 		isProtectedRoute: function () {
 			return route.protected;
@@ -416,8 +416,6 @@ var akimbo = {};
 	};
 
 	function process(scope) {
-		busy = true;
-
 		destroy(scope);
 		loadCore(scope);
 		loadController(scope);
@@ -441,8 +439,6 @@ var akimbo = {};
 				}
 			});
 		}
-
-		busy = false;
 	}
 
 	function destroy(scope) {
@@ -501,12 +497,18 @@ var akimbo = {};
 		}
 
 		if ((history.length > 1 || (history.length === 1 && path !== '')) && !scope.ignoreHistory && window.location.pathname.replace('/', '') !== path) {
-			history.pushState({page: path}, null, '/' + path);
+			path = path === '' ? '/' + basePath(scope) : path;
+
+			history.pushState({page: path}, null, path);
 		}
 
 		new scope.component.loadComponents(core.meta.components);
 	}
-})(akimbo);
+
+	function basePath(scope) {
+		return scope.config.get('settings.basePath') !== null ? scope.config.get('settings.basePath') + '/' : '';
+	}
+})(akimbo, jQuery);
 (function (Akimbo) {
 	Akimbo.Service = Service;
 
