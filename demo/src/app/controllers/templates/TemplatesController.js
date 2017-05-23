@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.App.Controllers.TemplatesController = TemplatesController;
 
 	function TemplatesController() {
@@ -18,7 +18,7 @@
 		};
 
 		this.init = function (scope) {
-			scope.apiService.index(null, scope.instance);
+			scope.apiService.index({object: scope.instance});
 		};
 	}
-})(akimbo);
+})(akimbo, jQuery);

@@ -13,12 +13,14 @@
 
 		this.listeners = function (scope) {
 			scope.locationService.listen('index.done', function (data) {
+				console.debug('done');
 				$('[data-content] div').html(JSON.stringify(data));
 			}, scope.instance);
 		};
 
 		this.init = function (scope) {
-			scope.locationService.index(null, scope.instance);
+			console.debug(7);
+			scope.locationService.index({object: scope.instance});
 		};
 	}
 })(akimbo, jQuery);

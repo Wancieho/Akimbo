@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.App.Controllers.CacheController = CacheController;
 
 	function CacheController() {
@@ -15,4 +15,4 @@
 			$('[data-content] p').append(scope.cache.get('store'));
 		};
 	}
-})(akimbo);
+})(akimbo, jQuery);

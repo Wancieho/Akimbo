@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Test = Test;
 
 	function Test() {}
@@ -23,9 +23,7 @@
 
 			$.ajaxSetup({async: true});
 
-			component.getDefaultInstance = function () {
-				return component;
-			};
+			component.instance = component;
 
 			component.constructor(component);
 
@@ -37,7 +35,11 @@
 				component.events(component);
 			}
 
+			if (component.init !== undefined) {
+				component.init(component);
+			}
+
 			return component;
 		}
 	};
-})(akimbo);
+})(akimbo, jQuery);

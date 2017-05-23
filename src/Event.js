@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Event = Event;
 
 	var listeners = [];
@@ -48,4 +48,4 @@
 			}
 		}
 	};
-})(akimbo);
+})(akimbo, jQuery);
