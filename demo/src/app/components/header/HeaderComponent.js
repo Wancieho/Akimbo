@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.App.Components.HeaderComponent = HeaderComponent;
 
 	function HeaderComponent() {
@@ -17,4 +17,4 @@
 			});
 		};
 	}
-})(akimbo);
+})(akimbo, jQuery);

@@ -270,7 +270,7 @@ var akimbo = {};
 		}
 	};
 })(akimbo);
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Event = Event;
 
 	var listeners = [];
@@ -316,7 +316,7 @@ var akimbo = {};
 			}
 		}
 	};
-})(akimbo);
+})(akimbo, jQuery);
 (function (Akimbo) {
 	Akimbo.Helper = Helper;
 
@@ -501,7 +501,7 @@ var akimbo = {};
 		return scope.config.get('settings.basePath') !== null ? scope.config.get('settings.basePath') + '/' : '';
 	}
 })(akimbo, jQuery);
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Service = Service;
 
 	function Service() {
@@ -555,106 +555,108 @@ var akimbo = {};
 		}
 	};
 
-	Service.prototype.create = function (params, object, overrideEvents) {
+	Service.prototype.create = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.create = $.ajax({
 			url: this.serviceUrl + '/' + this.uri,
 			type: 'POST',
-			data: params,
+			data: params.data,
+			headers: params.headers,
 			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.create.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.create.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.create.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.create.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.create.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.create.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.read = function (params, object, overrideEvents) {
+	Service.prototype.read = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
-		var identifier = 'read';
-
-		if (params !== undefined && params !== null && params.identifier !== undefined) {
-			identifier = params.identifier;
-		}
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.read = $.ajax({
-			url: this.serviceUrl + '/' + this.uri + '/' + identifier,
+			url: this.serviceUrl + '/' + this.uri + '/' + (params.identifier !== undefined ? params.identifier : 'read'),
 			type: 'GET',
-			headers: params
+			data: params.data,
+			headers: params.headers,
+			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.read.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.read.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.read.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.read.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.read.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.read.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.update = function (params, object, overrideEvents) {
+	Service.prototype.update = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.update = $.ajax({
-			url: this.serviceUrl + '/' + this.uri,
+			url: this.serviceUrl + '/' + this.uri + (params.identifier !== undefined ? '/' + params.identifier : ''),
 			type: 'PUT',
-			data: params,
+			data: params.data,
+			headers: params.headers,
 			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.update.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.update.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.update.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.update.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.update.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.update.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.destroy = function (params, object, overrideEvents) {
+	Service.prototype.destroy = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.update = $.ajax({
-			url: this.serviceUrl + '/' + this.uri,
+			url: this.serviceUrl + '/' + this.uri + (params.identifier !== undefined ? '/' + params.identifier : ''),
 			type: 'DELETE',
-			data: params,
+			data: params.data,
+			headers: params.headers,
 			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.destroy.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.destroy.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.destroy.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.destroy.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.destroy.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.destroy.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.index = function (params, object, overrideEvents) {
+	Service.prototype.index = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.index = $.ajax({
 			url: this.serviceUrl + '/' + this.uri,
 			type: 'GET',
-			headers: params
+			data: params.data,
+			headers: params.headers,
+			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.index.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.index.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.index.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.index.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
@@ -677,47 +679,47 @@ var akimbo = {};
 
 		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
 	};
-})(akimbo);
-(function (Akimbo) {
+})(akimbo, jQuery);
+(function (Akimbo, $) {
 	Akimbo.Test = Test;
 
 	function Test() {}
 
 	Test.prototype = {
 		component: function (classzor) {
-			var component = new classzor();
+			this.component = new classzor();
 
-			if (component.meta === undefined) {
-				throw '"' + component.name + '" meta property must be defined';
+			if (this.component.meta === undefined) {
+				throw '"' + this.component.name + '" meta property must be defined';
 			}
 
-			if (component.meta.constructor === undefined) {
-				throw '"' + component.name.constructor + '" constructor must be defined';
+			if (this.component.meta.constructor === undefined) {
+				throw '"' + this.component.name.constructor + '" constructor must be defined';
 			}
 
 			$.ajaxSetup({async: false});
 
-			$('body').remove('[' + component.meta.selector + ']').append('<div ' + component.meta.selector + ' style="display:none"></div>');
+			$('body > div').not('#qunit').remove();
 
-			$('[' + component.meta.selector + ']').load('../' + component.meta.templateUrl + '?' + new Date().getTime(), function () {});
+			$('body').append('<div ' + this.component.meta.selector + ' style="display:none"></div>');
+
+			$('[' + this.component.meta.selector + ']').load('../demo/' + this.component.meta.templateUrl + '?' + new Date().getTime(), function () {});
 
 			$.ajaxSetup({async: true});
 
-			component.getDefaultInstance = function () {
-				return component;
-			};
+			this.component.instance = JSON.parse(JSON.stringify(this.component));
 
-			component.constructor(component);
+			this.component.constructor(this.component);
 
-			if (component.listeners !== undefined) {
-				component.listeners(component);
+			if (this.component.listeners !== undefined) {
+				this.component.listeners(this.component);
 			}
 
-			if (component.events !== undefined) {
-				component.events(component);
+			if (this.component.events !== undefined) {
+				this.component.events(this.component);
 			}
 
-			return component;
+			return this.component;
 		}
 	};
-})(akimbo);
+})(akimbo, jQuery);

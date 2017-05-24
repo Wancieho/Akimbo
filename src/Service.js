@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.Service = Service;
 
 	function Service() {
@@ -52,109 +52,108 @@
 		}
 	};
 
-	//#TODO: change all params to object for all methods
-	Service.prototype.create = function (params, object, overrideEvents) {
+	Service.prototype.create = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.create = $.ajax({
 			url: this.serviceUrl + '/' + this.uri,
 			type: 'POST',
-			//#TODO: only send data if something is specified for all HTTP verbs
-			data: params,
+			data: params.data,
+			headers: params.headers,
 			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.create.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.create.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.create.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.create.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.create.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.create.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.read = function (params, object, overrideEvents) {
+	Service.prototype.read = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
-		var identifier = 'read';
-
-		if (params !== undefined && params !== null && params.identifier !== undefined) {
-			identifier = params.identifier;
-		}
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.read = $.ajax({
-			url: this.serviceUrl + '/' + this.uri + '/' + identifier,
+			url: this.serviceUrl + '/' + this.uri + '/' + (params.identifier !== undefined ? params.identifier : 'read'),
 			type: 'GET',
-			//#TODO: only send headers if specified
-			headers: params
+			data: params.data,
+			headers: params.headers,
+			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.read.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.read.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.read.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.read.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.read.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.read.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.update = function (params, object, overrideEvents) {
+	Service.prototype.update = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.update = $.ajax({
-			url: this.serviceUrl + '/' + this.uri,
+			url: this.serviceUrl + '/' + this.uri + (params.identifier !== undefined ? '/' + params.identifier : ''),
 			type: 'PUT',
-			data: params,
+			data: params.data,
+			headers: params.headers,
 			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.update.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.update.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.update.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.update.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.update.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.update.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.destroy = function (params, object, overrideEvents) {
+	Service.prototype.destroy = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.update = $.ajax({
-			url: this.serviceUrl + '/' + this.uri,
+			url: this.serviceUrl + '/' + this.uri + (params.identifier !== undefined ? '/' + params.identifier : ''),
 			type: 'DELETE',
-			data: params,
+			data: params.data,
+			headers: params.headers,
 			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.destroy.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.destroy.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.destroy.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.destroy.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.destroy.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.destroy.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
-	Service.prototype.index = function (params, object, overrideEvents) {
+	Service.prototype.index = function (params) {
 		this.validate();
 
 		var scope = this;
-		var events = $.extend(true, this.events, overrideEvents);
+		var events = $.extend(true, this.events, params.overrideEvents);
 
 		this.listeners.index = $.ajax({
 			url: this.serviceUrl + '/' + this.uri,
 			type: 'GET',
-			headers: params
+			data: params.data,
+			headers: params.headers,
+			contentType: 'application/json'
 		}).done(function (response) {
-			scope.event.broadcast(events.index.done, response, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.index.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
-			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).complete(function () {
-			scope.event.broadcast(events.index.complete, null, object !== undefined && object !== null ? $.extend({}, scope, object) : scope);
+			scope.event.broadcast(events.index.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
@@ -177,4 +176,4 @@
 
 		this.event.listen(event, callback, object !== undefined && object !== null ? $.extend({}, this, object) : this);
 	};
-})(akimbo);
+})(akimbo, jQuery);

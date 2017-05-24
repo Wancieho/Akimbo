@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.App.Controllers.EventsController = EventsController;
 
 	function EventsController() {
@@ -21,4 +21,4 @@
 			scope.event.broadcast('loaded');
 		};
 	}
-})(akimbo);
+})(akimbo, jQuery);

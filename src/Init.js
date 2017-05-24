@@ -1,4 +1,3 @@
-//#TODO!: remove unnecessary jQuery?
 ;
 'use strict';
 

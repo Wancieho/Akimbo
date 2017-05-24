@@ -18,7 +18,7 @@
 		};
 
 		this.init = function (scope) {
-			scope.locationService.index(null, scope.instance);
+			scope.locationService.index({object: scope.instance});
 		};
 	}
 })(akimbo, jQuery);

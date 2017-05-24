@@ -1,4 +1,4 @@
-(function (Akimbo) {
+(function (Akimbo, $) {
 	Akimbo.App.Controllers.HomeController = HomeController;
 
 	function HomeController() {
@@ -22,4 +22,4 @@
 			scope.cache.set('store', 'Hello World');
 		};
 	}
-})(akimbo);
+})(akimbo, jQuery);
