@@ -5,41 +5,39 @@
 
 	Test.prototype = {
 		component: function (classzor) {
-			var component = new classzor();
+			this.component = new classzor();
 
-			if (component.meta === undefined) {
-				throw '"' + component.name + '" meta property must be defined';
+			if (this.component.meta === undefined) {
+				throw '"' + this.component.name + '" meta property must be defined';
 			}
 
-			if (component.meta.constructor === undefined) {
-				throw '"' + component.name.constructor + '" constructor must be defined';
+			if (this.component.meta.constructor === undefined) {
+				throw '"' + this.component.name.constructor + '" constructor must be defined';
 			}
 
 			$.ajaxSetup({async: false});
 
-			$('body').remove('[' + component.meta.selector + ']').append('<div ' + component.meta.selector + ' style="display:none"></div>');
+			$('body > div').not('#qunit').remove();
 
-			$('[' + component.meta.selector + ']').load('../' + component.meta.templateUrl + '?' + new Date().getTime(), function () {});
+			$('body').append('<div ' + this.component.meta.selector + ' style="display:none"></div>');
+
+			$('[' + this.component.meta.selector + ']').load('../demo/' + this.component.meta.templateUrl + '?' + new Date().getTime(), function () {});
 
 			$.ajaxSetup({async: true});
 
-			component.instance = component;
+			this.component.instance = JSON.parse(JSON.stringify(this.component));
 
-			component.constructor(component);
+			this.component.constructor(this.component);
 
-			if (component.listeners !== undefined) {
-				component.listeners(component);
+			if (this.component.listeners !== undefined) {
+				this.component.listeners(this.component);
 			}
 
-			if (component.events !== undefined) {
-				component.events(component);
+			if (this.component.events !== undefined) {
+				this.component.events(this.component);
 			}
 
-			if (component.init !== undefined) {
-				component.init(component);
-			}
-
-			return component;
+			return this.component;
 		}
 	};
 })(akimbo, jQuery);

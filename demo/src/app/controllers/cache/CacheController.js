@@ -12,7 +12,7 @@
 		};
 
 		this.init = function (scope) {
-			$('[data-content] p').append(scope.cache.get('store'));
+			$('[data-content] p span').text(scope.cache.get('store'));
 		};
 	}
 })(akimbo, jQuery);
