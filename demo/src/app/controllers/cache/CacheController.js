@@ -12,7 +12,7 @@
 		};
 
 		this.init = function (scope) {
-			$('[data-content] p span').text(scope.cache.get('store'));
+			$('[data-content] p span').text(scope.cache.get('helloWorld') !== null ? scope.cache.get('helloWorld') : '');
 		};
 	}
 })(akimbo, jQuery);

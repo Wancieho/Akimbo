@@ -53,6 +53,8 @@ var akimbo = {};
 	function Cache() {
 		if (instance === null) {
 			instance = this;
+
+			this.event = new Akimbo.Event();
 		}
 	}
 
@@ -70,6 +72,8 @@ var akimbo = {};
 			}
 
 			data[index] = value;
+
+			instance.event.broadcast('set');
 		},
 		remove: function (index) {
 			if (index !== undefined) {
@@ -77,6 +81,9 @@ var akimbo = {};
 			} else {
 				data = {};
 			}
+		},
+		on: function (event, callback) {
+			return instance.event.listen(event, callback);
 		}
 	};
 })(akimbo);
