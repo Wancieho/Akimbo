@@ -19,7 +19,7 @@
 		};
 
 		this.init = function (scope) {
-			scope.cache.set('store', 'Hello World');
+			scope.cache.set('helloWorld', 'Hello World');
 		};
 	}
 })(akimbo, jQuery);

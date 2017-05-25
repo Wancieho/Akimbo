@@ -11,15 +11,20 @@
 			var controller = new Akimbo.Test().component(Akimbo.App.Controllers.CacheController);
 			controller.init(controller);
 
-			assert.strictEqual($('[' + controller.meta.selector + '] h1').text(), 'Cache');
 			assert.strictEqual($('[' + controller.meta.selector + '] p span').text(), 'Hello World');
+		});
+
+		QUnit.test('events.controller', function (assert) {
+			var controller = new Akimbo.Test().component(Akimbo.App.Controllers.EventsController);
+			controller.init(controller);
+
+			assert.strictEqual($('[' + controller.meta.selector + '] p').length, 2);
 		});
 
 		QUnit.test('services.controller', function (assert) {
 			var controller = new Akimbo.Test().component(Akimbo.App.Controllers.ServicesController);
 
 			controller.locationService.listen(controller.locationService.events.index.done, function (data) {
-				assert.strictEqual($('[' + controller.meta.selector + '] h1').text(), 'Services');
 				assert.strictEqual($('[' + controller.meta.selector + '] div').text(), JSON.stringify(data));
 			}, controller.instance);
 
@@ -36,7 +41,6 @@
 
 			controller.apiService.listen(controller.apiService.events.index.done, function (data) {
 				assert.strictEqual(Object.keys(data).length, 2);
-				assert.strictEqual($('[' + controller.meta.selector + '] h1').text(), 'Templates using jsrender');
 				assert.strictEqual($('[' + controller.meta.selector + '] ul li').length, 2);
 			}, controller.instance);
 
