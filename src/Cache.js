@@ -27,7 +27,10 @@
 
 			data[index] = value;
 
-			instance.event.broadcast('set');
+			instance.event.broadcast('set', {
+				index: index,
+				value: value
+			});
 		},
 		remove: function (index) {
 			if (index !== undefined) {
