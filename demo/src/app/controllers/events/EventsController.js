@@ -17,8 +17,8 @@
 				$('[data-content]').append('<p>"loaded" event caught</p>');
 			});
 
-			scope.cache.on('set', function () {
-				$('[data-content]').append('<p>"cache set" event caught</p>');
+			scope.cache.on('set', function (data) {
+				$('[data-content]').append('<p>"cache set" event caught: "' + JSON.stringify(data) + '"</p>');
 			});
 		};
 
@@ -27,7 +27,9 @@
 
 			scope.cache.remove();
 
-			scope.cache.set('set', 'anything');
+			scope.cache.set('i', {
+				am: 'object'
+			});
 		};
 	}
 })(akimbo, jQuery);

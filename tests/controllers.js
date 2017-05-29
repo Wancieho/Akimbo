@@ -19,6 +19,8 @@
 			controller.init(controller);
 
 			assert.strictEqual($('[' + controller.meta.selector + '] p').length, 2);
+			assert.strictEqual($('[' + controller.meta.selector + '] p').eq(0).text(), '"loaded" event caught');
+			assert.strictEqual($('[' + controller.meta.selector + '] p').eq(1).text(), '"cache set" event caught: "{"index":"i","value":{"am":"object"}}"');
 		});
 
 		QUnit.test('services.controller', function (assert) {
