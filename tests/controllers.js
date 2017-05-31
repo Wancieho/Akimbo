@@ -8,7 +8,7 @@
 		});
 
 		QUnit.test('cache.controller', function (assert) {
-			var controller = new Akimbo.Test().component(Akimbo.App.Controllers.CacheController);
+			var controller = new Akimbo.Test().component(Akimbo.App.Controllers.Cache.ChildController);
 			controller.init(controller);
 
 			assert.strictEqual($('[' + controller.meta.selector + '] p span').text(), 'Hello World');

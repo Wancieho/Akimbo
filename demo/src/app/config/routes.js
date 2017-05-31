@@ -3,23 +3,23 @@
 		return [
 			{
 				path: '',
-				controller: 'HomeController'
+				controller: Akimbo.App.Controllers.HomeController
 			},
 			{
 				path: 'services',
-				controller: 'ServicesController'
+				controller: Akimbo.App.Controllers.ServicesController
 			},
 			{
 				path: 'events',
-				controller: 'EventsController'
+				controller: Akimbo.App.Controllers.EventsController
 			},
 			{
-				path: 'cache',
-				controller: 'CacheController'
+				path: 'cache/child',
+				controller: Akimbo.App.Controllers.Cache.ChildController
 			},
 			{
 				path: 'templates',
-				controller: 'TemplatesController'
+				controller: Akimbo.App.Controllers.TemplatesController
 			}
 		];
 	};
