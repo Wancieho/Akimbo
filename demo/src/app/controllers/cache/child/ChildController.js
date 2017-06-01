@@ -1,10 +1,11 @@
 (function (Akimbo, $) {
-	Akimbo.App.Controllers.CacheController = CacheController;
+	Akimbo.App.Controllers.Cache = {};
+	Akimbo.App.Controllers.Cache.ChildController = ChildController;
 
-	function CacheController() {
+	function ChildController() {
 		this.meta = {
 			selector: 'data-content',
-			templateUrl: 'src/app/controllers/cache/cache.html'
+			templateUrl: 'src/app/controllers/cache/child/child.html'
 		};
 
 		this.constructor = function (scope) {

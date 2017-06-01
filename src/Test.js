@@ -5,6 +5,7 @@
 
 	Test.prototype = {
 		component: function (classzor) {
+			console.debug(classzor);
 			this.component = new classzor();
 
 			if (this.component.meta === undefined) {

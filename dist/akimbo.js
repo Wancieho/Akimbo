@@ -105,13 +105,13 @@ var akimbo = {};
 	}
 
 	Component.prototype = {
-		load: function (classzor) {
-			if (classzor === undefined) {
-				throw '"' + classzor + '" not found';
+		load: function (namespace) {
+			if (namespace === undefined) {
+				throw '"' + namespace + '" not found';
 			}
 
-			var component = new classzor();
-			component.name = scope.helper.functionName(classzor);
+			var component = new namespace();
+			component.name = scope.helper.functionName(namespace);
 			component.segments = scope.cache.get('segments');
 
 			component.instance = JSON.parse(JSON.stringify(component));
@@ -338,6 +338,20 @@ var akimbo = {};
 			var s = f && ((func.name && ['', func.name]) || func.toString().match(/function ([^\(]+)/));
 
 			return (!f && 'not a function') || (s && s[1] || 'anonymous');
+		},
+		stringToNamespace: function (stringNamespace) {
+			var pieces = stringNamespace.split('.');
+			var namespace = Akimbo;
+
+			for (var i = 1; i < pieces.length; i++) {
+				namespace = namespace[pieces[i]];
+			}
+
+			if (namespace === undefined) {
+				throw '"' + stringNamespace + '" does not exist';
+			}
+
+			return namespace;
 		}
 	};
 })(akimbo);
@@ -357,6 +371,7 @@ var akimbo = {};
 		this.component = new Akimbo.Component();
 		this.event = new Akimbo.Event();
 		this.cache = new Akimbo.Cache();
+		this.helper = new Akimbo.Helper();
 	}
 
 	Router.prototype = {
@@ -480,21 +495,15 @@ var akimbo = {};
 	}
 
 	function loadController(scope) {
-		var controller = Akimbo.App.Controllers[route.controller];
-
-		if (controller === undefined) {
-			throw 'Akimbo.App.Controllers.' + route.controller + ' does not exist';
-		}
-
-		controller = new scope.component.load(Akimbo.App.Controllers[route.controller]);
+		var instance = new scope.component.load(route.controller);
 
 		if (removeClass) {
 			$('body').removeClass();
 		}
 
-		if (controller.meta !== undefined) {
-			if (controller.meta.templateClass !== undefined) {
-				$('body').addClass(controller.meta.templateClass);
+		if (instance.meta !== undefined) {
+			if (instance.meta.templateClass !== undefined) {
+				$('body').addClass(instance.meta.templateClass);
 			}
 		}
 
@@ -697,6 +706,7 @@ var akimbo = {};
 
 	Test.prototype = {
 		component: function (classzor) {
+			console.debug(classzor);
 			this.component = new classzor();
 
 			if (this.component.meta === undefined) {

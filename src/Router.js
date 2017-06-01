@@ -14,6 +14,7 @@
 		this.component = new Akimbo.Component();
 		this.event = new Akimbo.Event();
 		this.cache = new Akimbo.Cache();
+		this.helper = new Akimbo.Helper();
 	}
 
 	Router.prototype = {
@@ -22,9 +23,9 @@
 			var routeExists = false;
 			var routes = scope.config.get('routes');
 
-			//#TODO: pass segments to ALL controllers and child components
 			segments = requestedPath.split('/');
 			removeClass = removeClassParam === false ? false : true;
+			//#TODO!: pass segments to ALL controllers and child components instead of using cache
 			scope.cache.set('segments', segments);
 
 			for (var i in scope.config.get('routes')) {
@@ -154,23 +155,16 @@
 	}
 
 	function loadController(scope) {
-		var controller = Akimbo.App.Controllers[route.controller];
-
-		if (controller === undefined) {
-			//#TODO: rather generate alerts as Cordova doesnt display throws?
-			throw 'Akimbo.App.Controllers.' + route.controller + ' does not exist';
-		}
-
-		controller = new scope.component.load(Akimbo.App.Controllers[route.controller]);
+		var instance = new scope.component.load(route.controller);
 
 		//remove body class and add if controller meta property specified
 		if (removeClass) {
 			$('body').removeClass();
 		}
 
-		if (controller.meta !== undefined) {
-			if (controller.meta.templateClass !== undefined) {
-				$('body').addClass(controller.meta.templateClass);
+		if (instance.meta !== undefined) {
+			if (instance.meta.templateClass !== undefined) {
+				$('body').addClass(instance.meta.templateClass);
 			}
 		}
 

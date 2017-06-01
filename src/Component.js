@@ -13,13 +13,13 @@
 	}
 
 	Component.prototype = {
-		load: function (classzor) {
-			if (classzor === undefined) {
-				throw '"' + classzor + '" not found';
+		load: function (namespace) {
+			if (namespace === undefined) {
+				throw '"' + namespace + '" not found';
 			}
 
-			var component = new classzor();
-			component.name = scope.helper.functionName(classzor);
+			var component = new namespace();
+			component.name = scope.helper.functionName(namespace);
 			component.segments = scope.cache.get('segments');
 
 			//#TODO!: remove JSON so that we dont have to cater for IE
