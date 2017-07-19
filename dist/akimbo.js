@@ -585,7 +585,7 @@ var akimbo = {};
 			type: 'POST',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.create.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -606,7 +606,7 @@ var akimbo = {};
 			type: 'GET',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.read.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -627,7 +627,7 @@ var akimbo = {};
 			type: 'PUT',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.update.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -648,7 +648,7 @@ var akimbo = {};
 			type: 'DELETE',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.destroy.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -669,7 +669,7 @@ var akimbo = {};
 			type: 'GET',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.index.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -706,7 +706,6 @@ var akimbo = {};
 
 	Test.prototype = {
 		component: function (classzor) {
-			console.debug(classzor);
 			this.component = new classzor();
 
 			if (this.component.meta === undefined) {

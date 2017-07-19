@@ -63,7 +63,7 @@
 			type: 'POST',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.create.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -84,7 +84,7 @@
 			type: 'GET',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.read.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -105,7 +105,7 @@
 			type: 'PUT',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.update.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -126,7 +126,7 @@
 			type: 'DELETE',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.destroy.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
@@ -147,7 +147,7 @@
 			type: 'GET',
 			data: params.data,
 			headers: params.headers,
-			contentType: 'application/json'
+			contentType: params.contentType !== undefined ? params.contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
 		}).done(function (response) {
 			scope.event.broadcast(events.index.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {

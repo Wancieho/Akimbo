@@ -44,7 +44,10 @@ gulp.task('app', ['demo-clean', 'akimbo'], function () {
 	var jsrender = gulp.src('bower_components/jsrender/jsrender.min.js')
 			.pipe(gulp.dest('demo/src/js'));
 
-	var akimbo = gulp.src('dist/akimbo.min.js')
+	var akimbo = gulp.src('dist/akimbo.js')
+			.pipe(gulp.dest('demo/src/js'));
+
+	var akimboMin = gulp.src('dist/akimbo.min.js')
 			.pipe(gulp.dest('demo/src/js'));
 
 	return gulp.src(['demo/src/app/**/*.js'])
