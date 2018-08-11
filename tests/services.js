@@ -18,7 +18,7 @@
 				assert.strictEqual(typeof data.region_name, 'string');
 			}, this);
 
-			scope.locationService.listen('index.complete', function () {
+			scope.locationService.listen('index.always', function () {
 				done();
 			}, this);
 
@@ -33,7 +33,7 @@
 				assert.strictEqual(typeof data.id, 'number');
 			}, this);
 
-			scope.apiService.listen('create.complete', function () {
+			scope.apiService.listen('create.always', function () {
 				done();
 			}, this);
 
@@ -59,7 +59,7 @@
 				assert.strictEqual(typeof data.body, 'string');
 			}, this);
 
-			scope.apiService.listen('read.complete', function () {
+			scope.apiService.listen('read.always', function () {
 				done();
 			}, this);
 
@@ -77,7 +77,7 @@
 				assert.strictEqual(typeof data.id, 'number');
 			}, this);
 
-			scope.apiService.listen('update.complete', function () {
+			scope.apiService.listen('update.always', function () {
 				done();
 			}, this);
 
@@ -94,7 +94,7 @@
 				assert.strictEqual(Object.keys(data).length, 0);
 			}, this);
 
-			scope.apiService.listen('destroy.complete', function () {
+			scope.apiService.listen('destroy.always', function () {
 				done();
 			}, this);
 
@@ -111,7 +111,7 @@
 				assert.strictEqual(data.length, 100);
 			}, this);
 
-			scope.apiService.listen('index.complete', function () {
+			scope.apiService.listen('index.always', function () {
 				done();
 			}, this);
 
@@ -125,7 +125,7 @@
 				assert.strictEqual(data.length, 100);
 			}, this);
 
-			scope.apiService.listen('complete', function () {
+			scope.apiService.listen('always', function () {
 				done();
 			}, this);
 
@@ -135,7 +135,7 @@
 					index: {
 						done: 'done',
 						fail: 'fail',
-						complete: 'complete'
+						always: 'always'
 					}
 				}
 			});

@@ -2,3 +2,4 @@ nbproject/
 node_modules/
 bower_components/
 demo/src/js/
+package-lock.json

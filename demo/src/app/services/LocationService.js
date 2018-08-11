@@ -24,8 +24,8 @@
 			scope.event.broadcast(events.index.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
 			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
-		}).complete(function () {
-			scope.event.broadcast(events.index.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
+		}).always(function () {
+			scope.event.broadcast(events.index.always, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 })(akimbo);

@@ -11,27 +11,27 @@
 			create: {
 				done: 'create.done',
 				fail: 'create.fail',
-				complete: 'create.complete'
+				always: 'create.always'
 			},
 			read: {
 				done: 'read.done',
 				fail: 'read.fail',
-				complete: 'read.complete'
+				always: 'read.always'
 			},
 			update: {
 				done: 'update.done',
 				fail: 'update.fail',
-				complete: 'update.complete'
+				always: 'update.always'
 			},
 			destroy: {
 				done: 'destroy.done',
 				fail: 'destroy.fail',
-				complete: 'destroy.complete'
+				always: 'destroy.always'
 			},
 			index: {
 				done: 'index.done',
 				fail: 'index.fail',
-				complete: 'index.complete'
+				always: 'index.always'
 			}
 		}, this.overrideEvents);
 
@@ -68,8 +68,8 @@
 			scope.event.broadcast(events.create.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
 			scope.event.broadcast(events.create.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
-		}).complete(function () {
-			scope.event.broadcast(events.create.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
+		}).always(function () {
+			scope.event.broadcast(events.create.always, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
@@ -89,8 +89,8 @@
 			scope.event.broadcast(events.read.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
 			scope.event.broadcast(events.read.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
-		}).complete(function () {
-			scope.event.broadcast(events.read.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
+		}).always(function () {
+			scope.event.broadcast(events.read.always, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
@@ -110,8 +110,8 @@
 			scope.event.broadcast(events.update.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
 			scope.event.broadcast(events.update.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
-		}).complete(function () {
-			scope.event.broadcast(events.update.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
+		}).always(function () {
+			scope.event.broadcast(events.update.always, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
@@ -131,8 +131,8 @@
 			scope.event.broadcast(events.destroy.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
 			scope.event.broadcast(events.destroy.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
-		}).complete(function () {
-			scope.event.broadcast(events.destroy.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
+		}).always(function () {
+			scope.event.broadcast(events.destroy.always, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
@@ -152,8 +152,8 @@
 			scope.event.broadcast(events.index.done, response, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		}).fail(function (xhr) {
 			scope.event.broadcast(events.index.fail, xhr.responseJSON !== undefined ? xhr.responseJSON : xhr, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
-		}).complete(function () {
-			scope.event.broadcast(events.index.complete, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
+		}).always(function () {
+			scope.event.broadcast(events.index.always, null, params.object !== undefined && params.object !== null ? $.extend({}, scope, params.object) : scope);
 		});
 	};
 
