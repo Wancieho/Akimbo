@@ -41,7 +41,15 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '/', '') : '');
+		try {
+			instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '/', '') : '');
+		} catch (requestedRouteException) { 
+			try {
+				instance.router.navigate('404');
+			} catch (notFoundRouteException) { 
+				throw notFoundRouteException;
+			}
+		}
 	}
 })(akimbo);
 (function (Akimbo) {

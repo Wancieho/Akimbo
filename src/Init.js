@@ -48,6 +48,16 @@ var akimbo = {};
 	}
 
 	function navigate() {
-		instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '/', '') : '');
+		// load requested route based on URI
+		try {
+			instance.router.navigate(window.location.protocol.indexOf('http') !== -1 ? window.location.pathname.replace(new Akimbo.Config().get('settings.basePath') !== null ? '/' + new Akimbo.Config().get('settings.basePath') + '/' : '/', '') : '');
+		} catch (requestedRouteException) { // requested route does not exists
+			// load 404 URI
+			try {
+				instance.router.navigate('404');
+			} catch (notFoundRouteException) { // 404 route does not exist
+				throw notFoundRouteException;
+			}
+		}
 	}
 })(akimbo);
